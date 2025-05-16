@@ -1,0 +1,77 @@
+syntax = "proto2";
+import "error_code.proto";
+package acu.common;
+
+
+
+message Header {
+  optional double timestamp_sec = 1;
+  optional string module_name = 2;
+  optional uint32 sequence_num = 3;
+  optional string version = 4 ;
+}
+
+message TimeStatus{
+  optional double dtime = 1;
+  optional string source_node_name = 2;
+  optional string destination_node_name = 3;
+}
+
+message TimeStatistics{
+  repeated TimeStatus dev_time_status_msg = 1;
+  optional double sending_timestamp = 2;
+}
+
+
+
+message FaultVec{
+  repeated acu.common.FaultInfo info_vec = 1;
+  optional int32 module_fault_level = 2;
+}
+
+
+
+
+message Clock {
+  optional int32 day = 1;
+  optional int32 hour = 2;
+  optional int32 minute = 3;
+  optional int32 second = 4;
+
+}
+
+message Time {
+  optional bool time_enable = 1;//add by guohui in 0518 [default = false]
+  optional int32 relative_time = 2; //seconds
+  optional Clock absolute_time = 3;
+}
+
+
+
+enum eAction {
+    DEFAULT_VALUE_EACTION = 0;
+    BRAKE = 1;
+    START = 2;
+    STOP = 3;
+    YIELD = 4;
+    PARKING = 5;
+    TURN = 6;
+    OBSTACLE_AVOID = 7;
+    LANE_CHANGE = 8;
+    GIVE_WAY = 9;
+    RE_MISSION_PLAN = 10;
+    LANE_FOLLOWING = 11;
+    CROSS = 12;
+  }
+
+
+
+
+enum eDirection {
+    DEFAULT_VALUE = 0;
+    LEFT = 1;
+    RIGHT = 2;
+    FORWARD = 3;
+    BACKWARD = 4;
+   }
+

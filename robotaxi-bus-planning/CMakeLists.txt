@@ -1,0 +1,351 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(planning_node)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -O2 -fopenmp -w -fPIC")
+
+#add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
+
+#find_package(std_msgs REQUIRED 
+#)
+
+find_package(OpenMP)
+find_package(OpenCV)
+find_package(Boost REQUIRED COMPONENTS system)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS}) 
+add_definitions(${PCL_DEFINITIONS}) 
+
+
+#include(${CMAKE_SOURCE_DIR}/build/Toolchain.cmake)
+
+include_directories(
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/include/
+  ${CMAKE_SOURCE_DIR}/include/geometry_msgs/
+  ${GFLAGS_INCLUDE_DIRS}
+  ${CMAKE_SOURCE_DIR}/timer/ 
+  ${CMAKE_SOURCE_DIR}/zmq/                
+  ${CMAKE_SOURCE_DIR}/zmq/include/
+  ${CMAKE_SOURCE_DIR}/zmq/zmq_base/
+  ${CMAKE_SOURCE_DIR}/zmq/zmq_base/avos_udp/
+  ${CMAKE_SOURCE_DIR}/zmq/zmq_base/avos_udp/avos_thread/
+  ${CMAKE_SOURCE_DIR}/zmq/zmq_base/avos_udp/avos_thread/relock/
+  ${CMAKE_SOURCE_DIR}/shm/
+  ${CMAKE_CURRENT_LIST_DIR}/dds/
+  ${CMAKE_CURRENT_LIST_DIR}/dds/include/
+  ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/include/
+  if(DEFINED CROSSCOMPILE)
+    ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/third_party/fastdds/Linux/22.04/j6_64/include/
+    /work/crosscompile/usr/local/include/eigen3/
+  else()
+    ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/third_party/fastdds/Linux/22.04/x86_64/include/
+    /usr/local/include/eigen3/
+  endif()
+
+)
+
+include_directories(
+  ${PCL_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}/
+  ${CMAKE_SOURCE_DIR}/map/vectormap/include
+  ${CMAKE_SOURCE_DIR}/map/vectormap_proto/proto_obj
+  ${CMAKE_SOURCE_DIR}/map/map_loader/include
+  ${CMAKE_SOURCE_DIR}/src
+  ${CMAKE_SOURCE_DIR}/include
+  ${CMAKE_SOURCE_DIR}/common
+  ${CMAKE_SOURCE_DIR}/common/common_proto
+  ${CMAKE_SOURCE_DIR}/common/common_header
+  ${CMAKE_SOURCE_DIR}/common/math
+  ${CMAKE_SOURCE_DIR}/common/math/qp_solver
+  ${CMAKE_SOURCE_DIR}/common/base
+  ${CMAKE_SOURCE_DIR}/common/base/include
+  ${CMAKE_SOURCE_DIR}/common/base/time/include
+  ${CMAKE_SOURCE_DIR}/src/planning/planning
+  
+  ${CMAKE_SOURCE_DIR}/src/planning/planning/common/toolbox/math/include
+  ${CMAKE_SOURCE_DIR}/src/planning/planning/common/toolbox
+  ${CMAKE_SOURCE_DIR}/src/planning/planning/src/execution/cognition/struct_cognition
+  ${CMAKE_SOURCE_DIR}/src/planning/planning/datapool/include
+
+)
+
+
+FILE(GLOB_RECURSE TOOLBOX_SRC
+  #${CMAKE_SOURCE_DIR}/common/util/ros_util.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/common/toolbox/geometry/src/*.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/common/toolbox/math/src/*.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/common/toolbox/math/src/curvature/*.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/common/toolbox/optimizer/src/*.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/common/toolbox/visualization/src/*.cpp
+)
+
+set(MAPCHECK_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/common/mapcheck/geotool/src/coordtransform.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/common/mapcheck/freespace/src/freespace.cpp
+)
+
+#set(PLANNING_SRC
+#runnable/communication/ros/src/rosbridge.cpp
+#runnable/entry/src/main.cpp
+#runnable/entry/src/planning.cpp
+#src/execution/cognition/struct_cognition/conf/cognition_gflags.cpp
+#)
+
+
+set(TASK_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/src/execution/task/src/Task.cc
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/src/execution/task/src/TaskFSM.cc
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/src/execution/task/src/TaskState.cc
+)
+
+FILE(GLOB_RECURSE COGNITION_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/src/execution/cognition/struct_cognition/*.cpp
+) 
+
+
+
+set(BUSINESS_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/src/execution/business/src/struct_business.cpp
+  #src/execution/business/src/unstruct_business.cpp
+)
+
+set(BEHAVIOR_SRC
+  #${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/src/execution/behaviorplan/normal_behavior/src/NormalBehavior.cc
+  #${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/src/execution/behaviorplan/normal_behavior/src/NormalBehaviorFSM.cc
+  #${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/src/execution/behaviorplan/normal_behavior/src/NormalBehaviorState.cc
+)
+
+
+FILE(GLOB_RECURSE DECISION_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/src/planning/planning/src/execution/behaviorplan/struct_behaviorplan/*.cpp
+)
+
+
+FILE(GLOB_RECURSE MOTIONPLAN_SRC
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/common/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/common/path/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/common/speed/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/common/trajectory/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/common/frame/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/common/obstacle/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/common/st_graph/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/common/reference_line_info/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/trajectory_stitcher/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/reference_line_provider/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/reference_line_provider/reference_line_smoother/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/planner/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/execution/motionplan/behavior_parser/*.cpp
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/optimizer/smoothing_spline/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/optimizer/piecewise_jerk/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/path_bound_generator/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/path_bound_generator/generator_utils/*.cpp 
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/math_util/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/math_util/coordinate_conversion/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/math_util/interpolation/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/curve/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/optimizer/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/speed_limit_decider/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/st_boundary_mapper/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/dp_st_plan/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/planning/planning/src/algorithm/discretized_points_smoother/*.cpp    
+  
+)
+
+set(COMMON_BASE_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/common/base/time/src/duration.cc
+  ${CMAKE_CURRENT_LIST_DIR}/common/base/time/src/node_time.cc
+  ${CMAKE_CURRENT_LIST_DIR}/common/base/time/src/rate.cc
+)
+
+############# end #############
+
+if(DEFINED CROSSCOMPILE)
+  message(STATUS "huangchuo CROSSCOMPILE")
+  link_directories(
+        ${PROJECT_SOURCE_DIR}/lib/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/dds/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/zmq/lib/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/map/vectormap_proto/proto_obj/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/map/vectormap/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/map/basemap/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/map/map_loader/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/common/common_proto/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/common/math/j6_lib
+        ${CMAKE_CURRENT_LIST_DIR}/map/xmlmap/j6_lib
+  )
+else()
+  message(STATUS "huangchuo x86")
+  link_directories(
+    ${PROJECT_SOURCE_DIR}/lib/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/dds/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/zmq/lib/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/map/vectormap_proto/proto_obj/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/map/vectormap/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/map/basemap/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/map/map_loader/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/common/common_proto/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/common/math/x86_lib
+    ${CMAKE_CURRENT_LIST_DIR}/map/xmlmap/x86_lib
+  )
+endif()
+
+
+
+set(PLANNING_SRC
+  shm/ShmProcCommunication.cpp
+  shm/acu_shm.cpp
+  zmq/Acu_zmq.cpp
+  dds/Acu_dds.cpp
+  #src/Demo.cpp             #add user code
+  ${TASK_SRC}
+  ${COGNITION_SRC}
+  ${BUSINESS_SRC}
+  ${BEHAVIOR_SRC}
+  ${TOOLBOX_SRC}
+  ${MAPCHECK_SRC}
+  ${MOTIONPLAN_SRC}
+  ${DECISION_SRC}
+  ${COMMON_BASE_SRC}
+  src/planning_node.cpp
+  src/main.cpp                   
+)
+
+
+
+add_executable(${PROJECT_NAME} 
+  ${PLANNING_SRC}
+)
+
+find_library(JSON_LIBRARIES
+NAMES json 
+HINTS ${CMAKE_CURRENT_LIST_DIR}/lib/j6_lib
+NO_CMAKE_FIND_ROOT_PATH
+REQUIRED
+)
+
+
+if(DEFINED CROSSCOMPILE)
+  find_library(FASTRTPS_LIBRARIES
+  NAMES fastrtps 
+  HINTS ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/third_party/fastdds/Linux/22.04/j6/lib
+    NO_CMAKE_FIND_ROOT_PATH
+    REQUIRED
+  )
+else()
+  find_library(FASTRTPS_LIBRARIES
+  NAMES fastrtps 
+  HINTS ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/third_party/fastdds/Linux/22.04/x86_64/lib
+    NO_CMAKE_FIND_ROOT_PATH
+    REQUIRED
+  )
+endif()
+
+if(DEFINED CROSSCOMPILE)
+    find_library(FASTCDR_LIBRARIES
+    NAMES fastcdr
+    HINTS ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/third_party/fastdds/Linux/22.04/j6/lib
+      NO_CMAKE_FIND_ROOT_PATH
+      REQUIRED
+    )
+else()
+    find_library(FASTCDR_LIBRARIES
+    NAMES fastcdr
+    HINTS ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/third_party/fastdds/Linux/22.04/x86_64/lib
+      NO_CMAKE_FIND_ROOT_PATH
+      REQUIRED
+    )
+endif()
+
+if(DEFINED CROSSCOMPILE)
+    find_library(FOONATHAN_MEMORY_LIBRARIES
+    NAMES foonathan_memory
+    HINTS ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/third_party/fastdds/Linux/22.04/j6/lib
+      NO_CMAKE_FIND_ROOT_PATH
+      REQUIRED
+    )
+else()
+    find_library(FOONATHAN_MEMORY_LIBRARIES
+    NAMES foonathan_memory
+    HINTS ${CMAKE_CURRENT_LIST_DIR}/dds/rclcpp/third_party/fastdds/Linux/22.04/x86_64/lib
+      NO_CMAKE_FIND_ROOT_PATH
+      REQUIRED
+    )
+endif()
+
+
+message(STATUS "huangchuo")
+if(FASTCDR_LIBRARIES)
+  message(STATUS "fastcdr library found at ${FASTCDR_LIBRARIES}")
+else()
+  message(FATAL_ERROR "fastcdr library not found")
+endif()
+
+if(FASTRTPS_LIBRARIES)
+  message(STATUS "fastrtps library found at ${FASTRTPS_LIBRARIES}")
+else()
+  message(FATAL_ERROR "fastrtps library not found")
+endif()
+
+if(FOONATHAN_MEMORY_LIBRARIES)
+  message(STATUS "foonathan_memory library found at ${FOONATHAN_MEMORY_LIBRARIES}")
+else()
+  message(FATAL_ERROR "foonathan_memory library not found")
+endif()
+
+target_link_libraries(${PROJECT_NAME}
+  libcalmcar-dds.a
+  librclcpp.a
+  libzmq.so
+  libzmq_base.so
+  #libDemo_proto.so           #add user proto_so
+  dl
+  rt
+  ${JSON_LIBRARIES}
+  ${FASTCDR_LIBRARIES}
+  ${FASTRTPS_LIBRARIES}
+  ${FOONATHAN_MEMORY_LIBRARIES}
+  ${PROTOBUF_LIBRARIES}
+  boost_filesystem boost_system boost_thread
+  glog
+  gflags
+  osqp            #${CMAKE_SOURCE_DIR}/common/common_lib/libosqp.so
+  tinyxml2
+  #gflags
+  ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
+  vectormap
+  xmlmap
+  vectormap_proto
+  basemap_lib
+  proj
+  map_loader_lib
+  common_math_lib
+  #common_msgs_proto 
+  libacu_proto.so
+  common_proto
+  libplanning_proto.so
+
+###################################################
+  #${common_base_LIBRARIES}
+  #${common_math_LIBRARIES}              -> common_math_lib
+  #${OpenCV_LIBRARIES}
+  #glog
+  #gflags
+  #geotool                               -> geotool
+  #map_loader                            -> map_loader
+  #proto_proto                           -> common_proto
+  #planning_proto_proto                  -> planning_proto
+  #${CMAKE_SOURCE_DIR}/common/common_lib/libosqp.so
+###################################################
+
+
+)
+
+#add_dependencies(Demo 
+#)

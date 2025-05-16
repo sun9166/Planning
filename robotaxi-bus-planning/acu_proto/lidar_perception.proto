@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "perception_types.proto";
+import "perception.proto";
+
+package calmcar.perception;
+
+message LidarObjects{
+  int64 frame_index = 1;
+  int64 timestamp = 2;
+
+  uint32 lidar_index = 3;
+
+  int64 id = 4;
+  int64 class_ = 5;
+  string class_name = 6;
+  int64 subclass = 7;
+  string subclass_name = 8;
+  float confidence = 9;
+  
+  float lat_distance = 10;
+  float long_distance = 11;
+  float vertical_distance = 12;
+
+  Point relative_velocity = 13;
+  Point relative_acceleration = 14;
+
+  Point absolute_velocity = 15;
+  Point absolute_acceleration = 16;
+
+  float heading = 17;
+
+  enum MotionStatus {
+    MOTION_STATUS_UNKNOWN = 0;
+    MOTION_STATUS_PARKED = 1;
+    MOTION_STATUS_STOPPED = 2;
+    MOTION_STATUS_MOVING = 3;
+    MOTION_STATUS_ONCOMING = 4;
+    MOTION_STATUS_CROSSING = 5;
+  }
+  MotionStatus motion_status = 18;
+
+  float width = 19;
+  float height = 20;
+  float length = 21;
+
+  Point closest_distance = 22;
+  Point closest_surface_center = 23;
+}
+
+message FreespaceSet {
+  float x = 1;
+  float y = 2;
+  uint32 class_type = 3;
+  uint32 edge = 4;
+  uint32 id = 5;
+  bool is_valid = 6;
+
+  float z = 7;
+  int64 timestamp = 8;
+}
+
+message LidarFreespace {
+  uint32 point_num = 1;
+  uint32 closed_contour = 2;
+  repeated FreespaceSet freespace_set = 3;
+}
+
+message LidarPerceptionFrame{
+  repeated LidarObjects lidar_object = 1;
+  LidarFreespace lidar_fsd = 2;
+}
+

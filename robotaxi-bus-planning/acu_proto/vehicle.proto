@@ -1,0 +1,272 @@
+syntax = "proto3";
+
+package vehicle;
+
+message VehicleID {
+  // Vehicle Identification Number
+  string vin = 1;
+
+  // License plate number
+  string plate = 2;
+
+  string other_unique_id = 3;
+
+  // http://wiki.calmcar.com:8090/pages/viewpage.action?pageId=70653574
+  enum ProtobufVersion {
+    option allow_alias = true;
+    V_1_0_0 = 0;  // da384882e44dd961d769413ada997e88dec28204
+    V_1_0_1 = 1;  // 7e7860a5871f5bce5b5ecc5277b3c9dd905d3e9e
+    CURRENT_VERSION = 1;
+  }
+  ProtobufVersion protobuf_version = 4;
+}
+
+message WheelSpeed {
+  // 0 for stand_still, positive for forward, negative for backward
+  float wheel_speed_fl = 1;
+  float wheel_speed_fr = 2;
+  float wheel_speed_rl = 3;
+  float wheel_speed_rr = 4;
+}
+
+message DashBoard {
+  bool engine_started = 1;
+
+  // Engine speed in RPM.
+  float engine_rpm = 2;
+
+  // Vehicle Speed in meters per second.
+  float speed_mps = 3;
+
+  float lateral_accel = 4;       // m/s^2
+  float longitudinal_accel = 5;  // m/s^2
+
+  // in rad, negative for clockwise, positive for count-clockwise
+  float yaw_rate = 6;  // rad/s
+  WheelSpeed wheel_speed = 7;
+
+  // Vehicle odometer in meters.
+  float odometer_m = 8;
+
+  // Fuel range in meters.
+  int32 fuel_range_m = 9;
+
+  float fuel_percentage = 10;
+  float battery_soc_percentage = 11;
+
+  float tank_temperature = 12;
+  float yaw = 13;
+  float pitch = 14;
+
+  float vert_accel = 15;
+}
+
+message EPS {
+  enum EPSMode {
+    MANUAL = 0;
+    AUTOMATIC = 1;
+    MANUAL2 = 2;
+    MANUAL3 = 3;
+    TEMPORAYR_INHIBITED = 4;
+  }
+  EPSMode Mode = 1;
+  float drvier_input = 2;
+  float target_angle = 3;
+}
+
+message ControlStatus {
+  // Real throttle location in [%], ranging from 0 to 100.
+  float throttle_percentage = 1;
+
+  // Real brake location in [%], ranging from 0 to 100.
+  float brake_percentage = 2;
+
+  // Real steering location in [%], ranging from -100 to 100.
+  // steering_angle / max_steering_angle
+  // Clockwise: negative
+  // CountClockwise: positive
+  float steering_percentage = 3;
+
+  // Applied steering torque in [Nm].
+  float steering_torque_nm = 4;
+
+  // Parking brake status.
+  bool parking_brake = 5;
+
+  enum GearPosition {
+    GEAR_INVALID = 0;
+    GEAR_PARKING = 1;
+    GEAR_REVERSE = 2;
+    GEAR_NEUTRAL = 3;
+    GEAR_DRIVE = 4;  // Drive or high speed (if has)
+    GEAR_LOW = 5;    // Drive or low speed(if has)
+  }
+  GearPosition gear_location = 6;
+
+  // Wiper status, 0 for stop
+  uint32 wiper_front = 7;
+  uint32 wiper_rear = 8;
+
+  // Electronic Stability Program
+  bool esp = 9;
+
+  // Electric Power Steering
+  EPS eps = 10;
+
+  float steer_angle = 11;
+
+  // mkz used --- start
+  int32 gear_reject = 12;
+  // mkz used --- end
+
+  float steer_angle_speed = 13;
+}
+
+message DoorStatus {
+  bool hood_open = 1;
+  bool trunk_open = 2;
+
+  bool fl_open = 3;
+  bool fr_open = 4;
+  bool rl_open = 5;
+  bool rr_open = 6;
+}
+
+message BeltStatus {
+  // Driver Seat Belt
+  bool main_warning = 1;
+  // Passenger Seat Belt
+  bool co_warning = 2;
+}
+
+message MkzReport {
+  float pi = 1;
+  float pc = 2;
+  float po = 3;
+  bool bo = 4;
+  bool bi = 5;
+  bool bc = 6;
+  bool en = 7;
+  bool driver = 8;
+  bool override = 9;
+  bool timetout = 10;
+  bool fltcal = 22;
+}
+
+message TirePressure {
+  float fl = 1;
+  float fr = 2;
+  float rl = 3;
+  float rr = 4;
+}
+
+message VehicleSignal {
+  enum TurnSignal {
+    TURN_NONE = 0;
+    TURN_LEFT = 1;
+    TURN_RIGHT = 2;
+  };
+  TurnSignal turn_signal = 1;
+
+  // lights enable command
+  bool high_beam = 2;
+  bool low_beam = 3;
+  bool fog_light_front = 4;
+  bool fog_light_rear = 5;
+  bool daytime_running_light = 6;
+  bool marker_lamp = 7;
+
+  bool horn = 8;
+
+  bool emergency_light = 9;
+
+  bool engine_warning = 10;
+
+  bool fuel_warning = 11;
+
+  bool tank_temperature_warning = 12;
+
+  DoorStatus door_status = 13;
+
+  BeltStatus belt_status = 14;
+
+  // ACC on/off
+  bool acc = 15;
+  // ACC resume/cancel
+  bool acc_resume = 16;
+  // ACC speed +
+  bool acc_inc = 17;
+  // ACC speed -
+  bool acc_dec = 18;
+
+  // Passenger Detect
+  bool passenger_detect = 19;
+
+  // mkz used --- start
+  MkzReport brake_report = 20;
+  MkzReport throttle_report = 21;
+  MkzReport steer_report = 22;
+  bool left_pad_ok = 23;
+  bool left_pad_up = 24;
+  bool left_pad_down = 25;
+  bool left_pad_left = 26;
+  bool left_pad_right = 27;
+  // mkz used --- end
+
+  TirePressure trie_pressure = 28;
+  // EV used
+  float soc_state = 29;
+  uint32 vehicle_fault_level = 30;
+}
+
+message Vehicle {
+  VehicleID vehicle_id = 1;
+
+  enum DrivingMode {
+    MODE_COMPLETE_MANUAL = 0;  // human drive
+    MODE_COMPLETE_AUTO_DRIVE = 1;
+
+    MODE_AUTO_STEER_ONLY = 2;  // only steer
+    MODE_AUTO_SPEED_ONLY = 3;  // include throttle and brake
+
+    // security mode when manual intervention happens, only response status
+    MODE_EMERGENCY = 4;
+  }
+  DrivingMode driving_mode = 2;
+
+  enum ErrorType {
+    ERROR_NONE = 0;
+
+    ERROR_UNKNOWN = 1;
+
+    // control cmd not in period
+    ERROR_CMD_NOT_IN_PERIOD = 2;
+
+    // receive car chassis can frame not in period
+    ERROR_CAN_NOT_IN_PERIOD = 3;
+
+    // car chassis report error, like steer, brake, throttle, gear fault
+    CHASSIS_ERROR = 4;
+
+    // human manual intervention
+    ERROR_MANUAL_INTERVENTION = 5;
+  }
+  ErrorType error_type = 3;
+
+  enum ChassisError {
+    CHASSIS_ERROR_NONE = 0;
+    CHASSIS_ERROR_ON_STEER = 1;
+    CHASSIS_ERROR_ON_BRAKE = 2;
+    CHASSIS_ERROR_ON_THROTTLE = 3;
+    CHASSIS_ERROR_ON_GEAR = 4;
+  }
+  uint32 error_code = 4;
+
+  // Measurement values from dashboard and chassis
+  DashBoard dash_board = 5;
+  // Signal lights
+  VehicleSignal vehicle_signal = 6;
+
+  // steer, gear, break and other switches
+  ControlStatus control_status = 7;
+}

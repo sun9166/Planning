@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package acu.planning;
+
+import "pnc_point.proto";
+
+message ObjectPredictionTrajectory {
+  optional double probability = 1;  // probability of this trajectory
+  repeated acu.common.TrajectoryPoint trajectory_point = 2;
+}

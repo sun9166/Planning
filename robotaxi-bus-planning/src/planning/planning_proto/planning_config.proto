@@ -1,0 +1,95 @@
+syntax = "proto2";
+
+package acu.planning;
+
+import "dp_poly_path_config.proto";
+import "dp_st_speed_config.proto";
+import "qp_spline_path_config.proto";
+import "qp_st_speed_config.proto";
+import "poly_st_speed_config.proto";
+
+
+message PiecewiseJerkPathConfig {
+  optional PiecewiseJerkPathWeights default_path_config = 1;
+  optional PiecewiseJerkPathWeights lane_change_path_config = 2;
+  optional PiecewiseJerkPathWeights start_from_road_side_config = 3;
+}
+message PiecewiseJerkPathWeights {
+  optional double l_weight = 1 [default = 1.0];
+  optional double dl_weight = 2 [default = 100.0];
+  optional double ddl_weight = 3 [default = 1000.0];
+  optional double dddl_weight = 4 [default = 10000.0];
+  optional double obstacle_weight = 5 [default = 50.0];
+  optional double dynamic_obstacle_weight = 6 [default = 0.0];
+  optional double dotted_line_weight = 7 [default = 0.0];
+  optional double solid_line_weight = 8 [default = 0.0];
+  optional double curb_weight = 9 [default = 0.0];
+}
+
+message QuasiPotentialFieldPathConfig {
+  optional QuasiPotentialFieldPathWeights default_path_config = 1;
+  optional QuasiPotentialFieldPathWeights start_from_road_side_config = 2;
+}
+
+message QuasiPotentialFieldPathWeights {
+  optional double l_weight = 1 [default = 1.0];
+  optional double dl_weight = 2 [default = 100.0];
+  optional double ddl_weight = 3 [default = 1000.0];
+  optional double dddl_weight = 4 [default = 10000.0];
+  optional double dotted_line_weight = 5 [default = 5.0];
+  optional double solid_line_weight = 6 [default = 10.0];
+  optional double curb_weight = 7 [default = 20.0];
+  optional double obstacle_weight = 8 [default = 20.0];
+}
+
+message PathBoundsDeciderConfig {
+  optional bool is_lane_borrowing = 1;
+  optional bool is_pull_over = 2;
+  // not search pull-over position if the destination is within this distance
+  // from ADC
+  optional double pull_over_destination_to_adc_buffer = 3 [default = 25.0];
+  // not search pull-over position if the destination is within this distance to
+  // path-end
+  optional double pull_over_destination_to_pathend_buffer = 4 [default = 10.0];
+  // disquality a pull-over position if the available path boundary's edge is
+  // not within this distance from the road edge
+  optional double pull_over_road_edge_buffer = 5 [default = 0.15];
+  optional double pull_over_approach_lon_distance_adjust_factor = 6
+      [default = 1.5];
+}
+
+enum TaskType {
+  DP_POLY_PATH_OPTIMIZER = 0;
+  DP_ST_SPEED_OPTIMIZER = 1;
+  QP_SPLINE_PATH_OPTIMIZER = 2;
+  QP_SPLINE_ST_SPEED_OPTIMIZER = 3;
+  TRAFFIC_DECIDER = 4;
+  PATH_DECIDER = 5;
+  SPEED_DECIDER = 6;
+  POLY_ST_SPEED_OPTIMIZER = 7;
+  PIECEWISE_JERK_PATH_OPTIMIZER = 8;
+  PATH_BOUNDS_DECIDER = 9;
+  QUASI_POTENTIAL_FIELD_PATH_OPTIMIZER = 10;
+};
+
+message PlannerConfig {
+  repeated TaskType task = 1;
+  optional acu.planning.DpPolyPathConfig dp_poly_path_config = 2;
+  optional acu.planning.DpStSpeedConfig dp_st_speed_config = 3;
+  optional acu.planning.QpSplinePathConfig qp_spline_path_config = 4;
+  optional acu.planning.QpStSpeedConfig qp_st_speed_config = 5;
+  optional acu.planning.PolyStSpeedConfig poly_st_speed_config = 6;
+  optional acu.planning.PiecewiseJerkPathConfig piecewise_jerk_path_config = 7;
+  optional acu.planning.PathBoundsDeciderConfig path_bounds_decider_config = 8;
+  optional acu.planning.QuasiPotentialFieldPathConfig quasi_potential_field_path_config = 9;
+}
+
+message PlanningConfig {
+  enum PlannerType {
+    PATH = 0;
+    SPEED = 1;  // expectation maximization
+  };
+  optional PlannerType planner_type = 1 [default = PATH];
+
+  optional PlannerConfig planner_config = 2;
+}

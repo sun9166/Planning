@@ -1,0 +1,282 @@
+syntax = "proto3";
+
+import "perception_sensor_info.proto";
+import "perception_types.proto";
+package calmcar.perception;
+
+enum LineColor {
+  LINE_COLOR_UNKNOWN = 0;
+  LINE_COLOR_WHITE = 1;
+  LINE_COLOR_YELLOW = 2;
+  LINE_COLOR_BLUE_GREEN = 3;
+  LINE_COLOR_ORANGE_RED = 4;
+}
+
+enum LineQuality {
+  LINE_QUALITY_VERY_LOW = 0;
+  LINE_QUALITY_LOW = 1;
+  LINE_QUALITY_PREDICTION = 2;
+  LINE_QUALITY_RELIABLE = 3;
+  LINE_QUALITY_MORE_RELIABLE = 4;
+  LINE_QUALITY_HIGH_QUALITY = 5;
+}
+
+enum LanemarkType {
+  LANEMARK_TYPE_UNDECIDED = 0;
+  LANEMARK_TYPE_SOLID = 1;
+  LANEMARKE_TYPE_DASHED = 2;
+  LANEMARK_TYPE_DLM = 3;
+  LANEMARK_TYPE_BOTTS_DOTS = 4;
+  LANEMARK_TYPE_DECELERATION = 5;
+  LANEMARK_TYPE_HOV_LANE = 6;
+}
+
+enum LreType {
+  LRE_TYPE_UNDECIDED = 0;
+  LRE_TYPE_ROAD_EDGE = 1;
+  LRE_TYPE_ELEVATED_STRUCTURE = 2;
+  LRE_TYPE_CURB = 3;
+  LRE_TYPE_CONES_POLES = 4;
+  LRE_TYPE_PARKING_CARS = 5;
+}
+
+enum DlmType {
+  DLM_TYPE_NOT_DLM = 0;
+  DLM_TYPE_SOLID_DASHED = 1;
+  DLM_TYPE_DASHED_SOLID = 2;
+  DLM_TYPE_SOLID_SOLID = 3;
+  DLM_TYPE_DASHED_DASHED = 4;
+  DLM_TYPE_UNDECIDED = 5;
+}
+
+enum DecelType {
+  DECEL_TYPE_NOT_DECEL = 0;
+  DECEL_TYPE_SOLID = 1;
+  DECEL_TYPE_DASHED = 2;
+  DECEL_TYPE_RESERVED = 3;
+}
+
+enum LineSide {
+  LINE_SIDE_UNKNOWN = 0;
+  LINE_SIDE_LEFT = 1;
+  LINE_SIDE_RIGHT = 2;
+}
+
+enum LineRole {
+  LINE_ROLE_NONE = 0;
+  LINE_ROLE_LEFT_LEFT_LANEMARK = 1;
+  LINE_ROLE_LEFT_RIGHT_LANEMARK = 2;
+  LINE_ROLE_RIGHT_LEFT_LANEMARK = 3;
+  LINE_ROLE_RIGHT_RIGHT_LANEMARK = 4;
+}
+
+enum LreIndex{
+  LRE_INDEX_UNFILLED = 0;
+  LRE_INDEX_FIRST = 1;
+  LRE_INDEX_SECOND = 2;
+}
+
+message LaneHost {
+  int64 timestamp = 1;
+
+  int32 track_id = 2;
+  int32 age = 3;
+  float exist_probability = 4;
+  LineQuality quality = 5;
+
+  int64 prediction_source = 6;
+  int64 prediction_type = 7;
+
+  LineColor color = 8;
+  float color_confidence = 9;
+
+  LanemarkType lanemark_type = 10;
+  float lanemark_type_confidence = 11;
+  DlmType dlm_type = 12;
+  DecelType decel_type = 13;
+
+  LineSide side = 14;
+
+  bool crossing = 15;
+
+  float marker_width = 16;
+  float marker_width_std = 17;
+
+  float dash_average_length = 18;
+  float dash_average_gap = 19;
+
+  bool is_multi_clothoid = 20;
+
+  float first_line_c3 = 21;
+  float first_line_c2 = 22;
+  float first_line_c1 = 23;
+  float first_line_c0 = 24;
+  float first_view_range_start = 25;
+  float first_view_range_end = 26;
+  float first_measured_view_range_end = 27;
+
+  float second_line_c3 = 28;
+  float second_line_c2 = 29;
+  float second_line_c1 = 30;
+  float second_line_c0 = 31;
+  float second_view_range_start = 32;
+  float second_view_range_end = 33;
+  float second_measured_view_range_end = 34;
+
+  CameraInfo.Position camera_position = 35;
+
+  bool is_valid = 36;
+  repeated Point2i image_points = 37;
+
+  //0=NOT_AVAILABLE 1=PREDICATED 2=DETECTED
+  bool availability_state = 38;
+}
+
+message LaneAdjacent {
+  int32 track_id  = 1;
+  int32 age = 2;
+  float exist_probability = 3;
+  LineQuality quality = 4;
+
+  int64 prediction_source = 5;
+  int64 prediction_type = 6;
+
+  LineColor color = 7;
+  float color_confidence = 8;
+
+  LanemarkType lanemark_type = 9;
+  float lanemark_type_confidence = 10;
+  DlmType dlm_type = 11;
+
+
+  LineRole role = 12;
+  float marker_width = 13;
+  float marker_width_std = 14;
+
+  float line_c3 = 15;
+  float line_c2 = 16;
+  float line_c1 = 17;
+  float line_c0 = 18;
+
+  float view_range_start = 19;
+  float view_range_end = 20;
+  float measured_view_range_end = 21;
+
+  int64 timestamp = 22;
+  CameraInfo.Position camera_position = 23;
+
+  bool is_valid = 24;
+  repeated Point2i image_points = 25;
+
+  //0=NOT_AVAILABLE 1=PREDICATED 2=DETECTED
+  bool availability_state = 26;
+}
+
+message LaneRoadedge {
+  int32 id  = 1;
+  int32 age = 2;
+  float exist_probability = 3;
+
+  LreType type = 4;
+  int32 prediction_type = 5;
+
+  LineSide side = 6;
+  LreIndex index = 7;
+
+  float height = 8;
+  float height_std = 9;
+
+  float line_c3 = 10;
+  float line_c1 = 11;
+  float line_c2 = 12;
+  float line_c0 = 13;
+
+  float view_range_start = 14;
+  float view_range_end = 15;
+  float measured_view_range_end = 16;
+
+  int64 timestamp = 17;
+  CameraInfo.Position camera_position = 18;
+
+  bool is_valid = 19;
+  repeated Point2i image_points = 20;
+
+  //0=NOT_AVAILABLE 1=PREDICATED 2=DETECTED
+  bool availability_state = 21;
+}
+
+
+message Lane {
+  int64 sync_id = 1;
+
+  float estimated_width = 2;
+
+  int32 lane_host_count = 3;
+  repeated LaneHost lane_host = 4;
+  int32 lane_adjacent_count = 5;
+  repeated LaneAdjacent lane_adjacent = 6;
+  int32 road_edge_count = 7;
+  repeated LaneRoadedge road_edge = 8;
+
+}
+
+message RoadMark {
+  int64 sync_id = 1;
+  int64 timestamp = 2;
+  CameraInfo.Position camera_position = 3;
+
+  Rect bbox = 4;
+
+  int32 id  = 5;
+  int32 age = 6;
+
+  int32 object_class = 7;
+  string object_class_name = 8;
+  int32 object_subclass = 9;
+  string object_subclass_name = 10;
+
+  float confidence = 11;
+  float lat_distance = 12;
+  float lat_distance_std = 13;
+  float long_distance = 14;
+  float long_distance_std = 15;
+
+  float width = 16;
+  float length = 17;
+
+}
+
+
+enum FSPType {
+  FSP_TYPE_UNKNOWN = 0;
+  FSP_TYPE_ROAD_EDGE = 1;
+  FSP_TYPE_PARTICIPAN = 2;
+  FSP_TYPE_BARRICADE = 3;
+}
+
+message FreeSpaceImagePoint {
+  CameraInfo.Position camera_position = 1;
+  FSPType classification_type = 2;
+  Point2i image_point = 3;
+}
+
+message FreeSpacePoint {
+  CameraInfo.Position camera_position = 1;
+  FSPType classification_type = 2;
+  float exist_probability = 3;
+
+  float azimuth_angle = 4;
+  float range = 5;
+  float range_std = 6;
+
+  int32 id  = 7;
+
+  int64 timestamp = 8;
+  bool is_valid = 9;
+}
+
+message FreeSpace {
+  int64 sync_id = 1;
+  repeated FreeSpaceImagePoint image_points = 2;
+  repeated FreeSpacePoint freespace_points= 3;
+}

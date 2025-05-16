@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+
+<launch>
+	<node pkg="map_loader" type="gps2utm" name="gps2utm" output="screen">
+    	<param type="double" value="116.337666164" name="gps_lon"/>
+    	<param type="double" value="40.0796899483" name="gps_lat"/>
+    </node>
+</launch>

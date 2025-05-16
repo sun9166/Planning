@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "perception_sensor_info.proto";
+package calmcar.perception;
+
+message Barricade {
+
+  int64 frame_index = 1;
+  int64 timestamp = 2;
+
+  CameraInfo.Position camera_position = 3;
+
+  int64 id = 4;
+  int64 class_ = 5;
+  string class_name = 6;
+  int64 subclass = 7;
+  string subclass_name = 8;
+  float confidence = 9;
+
+  int64 age_count = 10;
+
+  float width = 11;
+  float width_std = 12;
+  float height = 13;
+  float height_std = 14;
+
+  float height_from_groud = 15;
+  float height_from_groud_std = 16;
+
+  float lat_distance = 17;
+  float lat_distance_std = 18;
+  float long_distance = 19;
+  float long_distance_std = 20;
+
+  float length = 21;
+  float length_std = 22;
+}

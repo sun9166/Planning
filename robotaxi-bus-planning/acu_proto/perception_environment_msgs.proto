@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "common_msgs.proto";
+
+message SingleTrafficLight {
+  enum Color {
+    UNKNOWN_COLOR = 0;
+    RED = 1;
+    YELLOW = 2;
+    GREEN = 3;
+    BLACK = 4;
+  }
+
+  enum Flicker {
+    NORMAL = 0;
+    FLICKER_RED = 1;
+    FLICKER_YELLOW = 2;
+    FLICKER_GREEN = 3;
+    LENGTH_BLACK = 4;
+    LENGTH_FLICKER_YELLOW = 5;
+    UNORMAL = 6;
+  }
+
+  Color color = 1;  // 交通灯颜色
+  string id = 2;    // 交通灯字符串ID
+  Flicker flicker = 3;  // 闪烁状态
+  bool occlude = 4;  // 是否被遮挡
+  int32 number = 5;   // 数字，0-9
+  float confidence = 6;  // 检测结果的置信度，介于0和1之间
+  float tracking_time = 7;  // 交通灯自检测以来的持续时间
+  repeated int32 light_cycle = 8; // green yellow red
+  bool using_obu = 9;
+  int32 light_type = 10; // UNKNOWN = 0, ARROW_STRAIGHT = 1, ARROW_LEFT = 2, ARROW_RIGHT = 3, ARROW_UTURN = 4, CIRCLE = 5,NUM = 6
+}
+
+message TrafficLightDetection {
+  common_msgs.Header header = 1;  // 消息头
+  repeated SingleTrafficLight traffic_light = 2;  // 交通灯列表
+  bool contain_lights = 3;   // 是否包含交通灯
+}
+
+message PerceptionEnvironment {
+  TrafficLightDetection traffic_light = 1;  // 消息头
+}

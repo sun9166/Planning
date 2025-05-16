@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package vehicle_perception_msgs;
+import "common_msgs.proto";
+
+import "perception_objects_msgs.proto";
+import "perception_environment_msgs.proto";
+import "sensor_imu_msgs.proto";
+
+message VehiclePerception {
+  common_msgs.Header header = 1;  // 消息头
+  PerceptionObjects obstacle_info = 2;  // 障碍物信息
+  PerceptionEnvironment environment_info = 3;  // 环境信息
+  sensor_imu_msgs.SensorImu localizaion = 4; // 定位信息
+}

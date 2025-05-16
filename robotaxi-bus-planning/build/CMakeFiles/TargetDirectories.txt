@@ -1,0 +1,3 @@
+/host/robotaxi-bus-planning/build/CMakeFiles/planning_node.dir
+/host/robotaxi-bus-planning/build/CMakeFiles/edit_cache.dir
+/host/robotaxi-bus-planning/build/CMakeFiles/rebuild_cache.dir

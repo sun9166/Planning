@@ -1,0 +1,119 @@
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+BOLD='\033[1m'
+NONE='\033[0m'
+if [ $# != 2 ] ; then
+	echo -e "\n${RED}Usage${NONE}:
+	${BOLD} bash generateCXX ${NONE} [OPTION]
+	or ${BOLD} ./generateCXX ${NONE} [OPTION]"
+	echo -e "\n${RED}Options${NONE}:
+  	${BLUE}-f|-file filename ${NONE}"
+  	exit 0
+fi
+
+
+namespace_header_str=""
+namespace_end_str=""
+cmd_line_num=2
+namespace_before_str="Package"
+namespace_header_insert_pos=0
+namespace_end_insert_pos=0
+
+function GetNamespace(){
+	echo "generate..... c++ demo from $1, the demo is in cc folder"
+	line=`sed -n '2p' $1`
+	array=($line)
+	length=${#array[@]}
+	if [ $length -ne $cmd_line_num ];then
+		echo "$line is not in rule"
+    	return
+	fi
+	if [ "${array[0]}" != "$namespace_before_str" ];then
+		echo "$line is not in rule"
+		return
+	fi
+	OLD_IFS="$IFS"
+	IFS="."
+	array=(${array[1]})
+	IFS="$OLD_IFS"
+	for var in ${array[@]}
+	do
+		temp_header="namespace $var{\n"
+		temp_end="}\n"
+		namespace_header_str=$namespace_header_str$temp_header
+		namespace_end_str=$namespace_end_str$temp_end
+	done
+	#echo -e "$namespace_header_str \n\n\n\n$namespace_end_str"
+}
+
+function GetNamespaceHeaderInsertPos(){
+	if [ `grep -c "#include" $1` -eq '0' ]; then 
+        temp=`grep -n "#define"  $1 | tail -1| cut -d ":" -f 1`
+        temp=$[$temp+1]
+        namespace_header_insert_pos=$temp
+
+    else 
+        temp=`grep -n "#include"  $1 | tail -1| cut -d ":" -f 1`
+        #echo $temp
+        temp=$[$temp+1]
+        namespace_header_insert_pos=$temp
+    fi
+    #echo "$1:$namespace_header_insert_pos"
+    sed -i "${namespace_header_insert_pos}i ${namespace_header_str}" $1
+}
+
+
+function GetNamespaceEndInsertPos(){
+	if [ `grep -c "#endif" $1` -eq '0' ]; then 
+        echo -e "${namespace_end_str}" >> $1
+    else 
+        temp=`sed -n -e '/#endif/=' $1`
+        sed -i "${temp}i ${namespace_end_str}" $1
+    fi
+}
+
+function readfile()
+{
+    for file in `ls $1`
+    do
+        if [ -d $1"/"$file ]
+        then
+            echo "ass"
+        else
+        	GetNamespaceHeaderInsertPos $file
+        	GetNamespaceEndInsertPos $file
+
+        fi
+    done
+}
+
+function GenerateCXX(){
+	mkdir -p cc
+	cd cc
+	rm *
+
+	`cat ../tool/NunniFSMGen.jar > .tmp`
+	`rm ../tool/NunniFSMGen.jar `
+	`mv .tmp  ../tool/NunniFSMGen.jar`
+
+	java -jar ../tool/NunniFSMGen.jar -o c++ ../$1
+	# sed -n '2p' ../$1
+	GetNamespace ../$1
+	for i in `ls . | grep '.cxx' | awk -F"." '{print $1}'`
+	do
+	    mv $i.cxx $i.cc
+	done
+
+	readfile .
+}
+   
+cmd=$1
+shift
+
+case $cmd in
+-f|-file)
+  GenerateCXX $@
+  ;;
+esac
+
+

@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package Canbus.proto;
+
+message Header {
+  double timestamp_sec = 1;
+  string module_name = 2;
+  uint32 sequence_num = 3;
+  string version = 4 ;
+}
+
+message FaultInfo {
+  int32 	EPS_fault               = 1;
+  int32 	Brake_fault             = 2;
+  int32 	Drive_fault             = 3;
+  int32 	EPB_fault               = 4;
+  int32 	Power12_Over_fault      = 5;
+  int32 	Power12_Low_fault       = 6;
+  int32 	PowerIGN_Over_fault     = 7;
+  int32 	PowerIGN_Low_fault      = 8;
+  int32 	EPS_Com_fault           = 9;
+  int32 	BCM_Com_fault           = 10;
+  int32 	EPB_Com_fault           = 11;
+  int32 	CPU_Com_fault           = 12;
+  int32 	VCU_Com_fault           = 13;
+}
+
+message KeyState {
+  int32 	emergency_brake_key_state   = 1;
+  int32 	slow_brake_key_state        = 2;
+  int32 	drive_key_state             = 3;
+  int32 	break_state                 = 4;
+  int32	auto_switch_state           = 5;
+  int32	active_switch_state         = 6;  
+  int32 	steer_left_up               = 7;
+  int32 	steer_left_down             = 8;
+  int32 	steer_left_left             = 9;
+  int32 	steer_left_right           = 10;
+  int32 	turn_light_switch	= 11;
+  int32	position_light_switch = 12;
+  int32	front_wiper_switch	= 13;
+  int32	hazard_lamp_switch	= 14;
+  int32	door_closing_button	= 15;
+  int32	door_opening_button = 16;
+  int32	top_light_button	= 17;
+  int32	front_washer_switch	= 18;
+  int32	lowbeam_switch	= 19;
+  int32	highbeam_switch	= 20;
+}
+
+message VehicleInfo {
+  float 	steerangle                  = 1;
+  float 	speed                       = 2;
+  int32	DCDC_work_state            = 3;
+  int32	batteryStatus              = 4;
+  int32 	shift_position              = 5;
+  int32 	epb_status                  = 6;
+  int32 	current_drive_mode          = 7;
+  int32 	control_switch_state        = 8;
+  int32	brake_switch_state          = 9;
+  float 	break_pressure              = 10;
+  float 	accpedalposi                = 11;
+  float 	lon_accel                   = 12;
+  float 	lon_jerk                    = 13;
+  float 	lat_accel                   = 14;
+  float 	lat_jerk                    = 15;
+  float 	yawrate                     = 16;
+  float	steerwheeltorq	= 17;
+}
+
+
+message VehicleState {
+  int32 	brake_light_state           = 1;
+  int32 	doubleflash_light_state     = 2;
+  int32 	lowbeam_state               = 3;
+  int32 	highbeam_state              = 4;
+  int32 	leftturn_light_state        = 5;
+  int32 	rightturn_light_state       = 6;
+  int32 	frontfog_light_state        = 7;
+  int32 	rearfog_light_state         = 8;
+  int32 	tail_light_state            = 9;
+  int32 	horn_state                  = 10;
+  int32 	wiper_state                 = 11;
+  int32 	driver_door_state           = 12;
+  int32 	passager_door_state         = 13;
+  int32 	driver_door_lock_state      = 14;
+  int32 	passager_door_lock_state    = 15;
+  int32	left_rear_door_lock_state   = 16;
+  int32	right_rear_door_lock_state  = 17;
+  int32	trunk_state                 = 18;
+  int32 	driver_seatbeltrst          = 19;
+  int32 	passager_seatbeltrst        = 20;
+  double 	bms_battery_soc             = 21;
+  double 	vehicle_total_mile          = 22;
+  double 	mile_left_over              = 23;
+  double	vehicle_temperature         = 24;
+  int32	front_washer_state	=25;
+  int32	top_light_state	=26;
+  int32	tyre_state		=27;
+  int32	eps_mode_fb	=28;
+  int32	accl_mode_fb	=29;
+  int32	brak_mode_fb	=30;
+  int32	epb_mode_fb	=31;
+  int32	bcm_mode_fb	=32;
+  int32	accl_allow		=33;
+  int32	epb_allow		=34;
+  int32	gear_intervene	=35;
+  int32 	vcu_ad_exitreq	=36;
+}
+
+message VehicleFeedback {
+  Header 	header                      = 1;
+  VehicleInfo 	vehicle_info          = 2;
+  KeyState       key_state            = 3;
+  VehicleState vehicle_state          = 4;
+  FaultInfo fault_info                = 5;
+}
+
+message AddOnFeedback {
+  Header  header		=1;
+  int32    slow_brake_key_2_state    =2;
+}

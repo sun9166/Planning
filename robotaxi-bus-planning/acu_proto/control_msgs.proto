@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package control_msgs;
+
+import "common_msgs.proto";
+import "vehicle_perception_msgs.proto";
+import "planning_msgs.proto";
+
+message Cell{
+     uint32 idc = 1;
+     uint32 type = 2;
+     float x = 3;
+     float y = 4;
+     float xg = 5;
+     float yg = 6;
+}
+
+message Object {
+    uint32 id  =1;
+    float x         =2;    //# relative distance of x, unit: m
+    float y         =3;    //# relative distance of y, unit: m
+    float vxrel     =4;    //# relative speed of x, unit: m/s
+    float vyrel     =5;    //# relative speed of y, unit: m/s
+    float vxabs     =6;    //# absolute speed of x, unit: m/s
+    float vyabs     =7;    //# absolute speed of y, unit: m/s
+    float acceleration =8; 
+    float width     =9;    //# unit: m
+    float length    =10;   //# unit: m
+    float heading   =11;   
+    float speed     =12;   //# unit: m/s
+    uint32    type     =13;   //# 0-car, 1-truck, 2-pedestrian, 3-cyclist, 4-virtual, 5-unknown
+    repeated Cell cells=14;   //# vector of object occupied cells
+}
+
+message Obstacles {
+
+    repeated Object objects = 1;
+    repeated Cell   Cells =2;
+
+}
+
+message VehicleInfo {
+	 float steerangle                   = 1;
+	 float speed                        = 2;
+	 float vehicle_accel                = 3;
+	 float brake_pressure               = 4;
+	 int32 shift_position               = 5;
+	 int32 epb_status                   = 6;
+	 int32 current_drive_mode           = 7;
+	 int32 sys_state                    = 8;
+	 bool vehicle_auto_enable           = 9;
+	 bool vehicle_lat_enable            = 10;
+	 bool vehicle_lon_enable            = 11;
+	 bool vehicle_epb_status            = 12;
+	 int32 on_accpedal                  = 13;
+	 bool steer_left_down               = 14;
+}
+
+message ControlFeedback {
+	 common_msgs.Header header                      = 1;
+	 VehicleInfo vehicle_info           = 2;
+	 int32 brake_state                  = 3;
+}
+
+
+message BussinessDemand {
+	 bool isvalid                       = 1;
+     int32 cmd                          = 2;
+}
+
+message Latcontrol {
+	 float targetangle                  = 1; 
+	 int32  targettorque                = 2;
+}
+
+message Loncontrol {
+	 float targettorque                 = 1;
+	 float targetpressure               = 2;
+	 float pitch                        = 3;
+	 float targetspeed                  = 4;
+	 float targetaccelation             = 5;
+	 int32 actuatormode                 = 6; //0-BRAKING   1-DRIVERING
+	 int32 shiftposition                 = 7; // 0-PARK  1-REVERSE  2-DRIVER  3-NEUTRAL
+	 bool epbflag                       = 8;
+	 bool brakelight                    = 9;
+	 bool reverselight                  = 10;
+	 int32 emergency_obstacle           = 11;
+	 bool slop_status                   = 12;
+}
+
+message SystemControl {
+	 Latcontrol latcontrol              = 1;
+	 Loncontrol loncontrol              = 2;
+     BussinessDemand hmi_control        = 3;
+}
+
+//控制模块输出
+message SystemOverall {
+	common_msgs.Header header                              = 1;
+	common_msgs.FaultVec fault_vec                         = 2;
+	vehicle_perception_msgs.VehiclePerception vechle_perception      = 3; //需导入感知 
+	planning_msgs.Trajectory motion_path     = 4;   //需导入规划
+	planning_msgs.Business business_feedback = 5;   //需导入规划
+	SystemControl system_control               = 6;
+}
+
+
+
+
+
+

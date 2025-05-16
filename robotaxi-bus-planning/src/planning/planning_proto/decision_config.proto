@@ -1,0 +1,43 @@
+syntax = "proto2";
+
+package acu.planning;
+
+message IntentionDeciderConfig {
+  optional bool offset_enable = 1;
+  optional bool abandon_lc_enable = 2;
+  optional bool mission_lc_enable = 3;
+  optional bool speed_lc_enable = 4;
+  optional bool obstacle_enable = 5;
+  optional bool pull_over_enable = 6;
+  optional bool meeting_enable = 7;
+  optional bool command_lc_enable = 8;
+  optional bool departure_enable = 9;
+}
+
+message ReferenceLineDeciderConfig {
+  optional bool borrow_lane_enable = 1;
+  optional bool borrow_road_enable = 2;
+  optional double dis_to_line = 3;
+  optional double dis_to_curb = 4;
+}
+
+message ObjectDeciderConfig {
+  optional double dis_to_stop = 1;
+  optional bool yield_enable = 2;
+  optional bool replan_slow_enable = 3;
+  optional double replan_speed_limit = 4;
+}
+
+message ParkingDeciderConfig {
+  optional double cruise_speed = 1;
+  optional double allowable_offset = 2;
+  optional double front_space = 3;
+  optional double back_space = 4;
+}
+
+message DeciderConfig {
+  optional IntentionDeciderConfig intention = 1;
+  optional ReferenceLineDeciderConfig reference_line = 2;
+  optional ObjectDeciderConfig object = 3;
+  optional ParkingDeciderConfig parking = 4;
+}

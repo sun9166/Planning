@@ -1,0 +1,396 @@
+name:avvs_actuator_delay|value:0
+name:avvs_centacc_max|value:3.5
+name:avvs_d_preview|value:1.6666
+name:avvs_eps_speed|value:300
+name:avvs_k_near_preview|value:1
+name:avvs_k_preview|value:1.5
+name:avvs_kp_lateral_error|value:0.3
+name:avvs_rear_mid_x|value:0
+name:avvs_rear_mid_y|value:0
+name:avvs_torque|value:300
+name:lat_period|value:1000
+name:acel_max|value:1.5
+name:acel_min|value:-5
+name:adative_weight|value:0.2
+name:distance_const|value:0
+name:endlength_max_press|value:45
+name:endlength_min_press|value:15
+name:integral_lower|value:-0.2
+name:integral_upper|value:0.2
+name:k2p|value:4000
+name:k2t|value:1600
+name:k_pitch|value:1
+name:k_pressure_adjust|value:1
+name:kis|value:0.1
+name:kps|value:0.5
+name:lag_time_s|value:1
+name:low_switch|value:-1
+name:max_endlength|value:0.4
+name:min_driver_torque|value:630
+name:min_endlength|value:0
+name:period|value:0.05
+name:pressure_max|value:100
+name:pressure_min|value:0
+name:speed_weight|value:1.5
+name:torque_baselimp|value:200
+name:torque_max|value:1000
+name:torque_min|value:0
+name:up_switch|value:0.5
+name:wait_time|value:5
+model_configs {
+  name: "latcontrol"
+  version: "1.0.0"
+  integer_params {
+    name: "avvs_enable_actuatorctrl"
+    value: 0
+  }
+  integer_params {
+    name: "avvs_enable_sim_flag"
+    value: 0
+  }
+  integer_params {
+    name: "avvs_eps_mean_filter_window"
+    value: 5
+  }
+  integer_params {
+    name: "avvs_general_mean_filter_window"
+    value: 10
+  }
+  integer_params {
+    name: "avvs_limp_ctrl_type"
+    value: 1
+  }
+  integer_params {
+    name: "avvs_output_mean_filter_window"
+    value: 4
+  }
+  integer_params {
+    name: "avvs_speed_mean_filter_window"
+    value: 5
+  }
+  integer_params {
+    name: "enable_latauto"
+    value: 1
+  }
+  integer_params {
+    name: "latctrl_mode"
+    value: 0
+  }
+  string_params {
+    name: "avvs_latctrl_type"
+    value: "purepursuit"
+  }
+  double_params {
+    name: "avvs_actuator_delay"
+    value: 0
+  }
+  double_params {
+    name: "avvs_centacc_max"
+    value: 3.5
+  }
+  double_params {
+    name: "avvs_d_preview"
+    value: 1.6666
+  }
+  double_params {
+    name: "avvs_eps_speed"
+    value: 300
+  }
+  double_params {
+    name: "avvs_k_near_preview"
+    value: 1
+  }
+  double_params {
+    name: "avvs_k_preview"
+    value: 1.5
+  }
+  double_params {
+    name: "avvs_kp_lateral_error"
+    value: 0.3
+  }
+  double_params {
+    name: "avvs_rear_mid_x"
+    value: 0
+  }
+  double_params {
+    name: "avvs_rear_mid_y"
+    value: 0
+  }
+  double_params {
+    name: "avvs_torque"
+    value: 300
+  }
+  double_params {
+    name: "lat_period"
+    value: 1000
+  }
+}
+model_configs {
+  name: "loncontrol"
+  version: "1.0.0"
+  integer_params {
+    name: "avvs_acc_filter"
+    value: 2
+  }
+  integer_params {
+    name: "avvs_acc_filter_least_order"
+    value: 3
+  }
+  integer_params {
+    name: "avvs_acc_filter_least_step"
+    value: 5
+  }
+  integer_params {
+    name: "avvs_acc_filter_mov"
+    value: 5
+  }
+  integer_params {
+    name: "avvs_gen_filter_least_order"
+    value: 3
+  }
+  integer_params {
+    name: "avvs_gen_filter_least_step"
+    value: 5
+  }
+  integer_params {
+    name: "avvs_gen_filter_mov"
+    value: 5
+  }
+  integer_params {
+    name: "avvs_general_filter"
+    value: 2
+  }
+  integer_params {
+    name: "avvs_limp_controller"
+    value: 1
+  }
+  integer_params {
+    name: "avvs_low_controller"
+    value: 1
+  }
+  integer_params {
+    name: "avvs_perviewer"
+    value: 1
+  }
+  integer_params {
+    name: "avvs_speed_filter"
+    value: 3
+  }
+  integer_params {
+    name: "avvs_speed_filter_least_order"
+    value: 3
+  }
+  integer_params {
+    name: "avvs_speed_filter_least_step"
+    value: 5
+  }
+  integer_params {
+    name: "avvs_speed_filter_mov"
+    value: 5
+  }
+  integer_params {
+    name: "avvs_upper_controller"
+    value: 1
+  }
+  string_params {
+    name: "avvs_vehicle_param_path"
+    value: "src/config/IDPXJIXX000001/control_param.conf"
+  }
+  double_params {
+    name: "acel_max"
+    value: 1.5
+  }
+  double_params {
+    name: "acel_min"
+    value: -5
+  }
+  double_params {
+    name: "adative_weight"
+    value: 0.2
+  }
+  double_params {
+    name: "distance_const"
+    value: 0
+  }
+  double_params {
+    name: "endlength_max_press"
+    value: 45
+  }
+  double_params {
+    name: "endlength_min_press"
+    value: 15
+  }
+  double_params {
+    name: "integral_lower"
+    value: -0.2
+  }
+  double_params {
+    name: "integral_upper"
+    value: 0.2
+  }
+  double_params {
+    name: "k2p"
+    value: 4000
+  }
+  double_params {
+    name: "k2t"
+    value: 1600
+  }
+  double_params {
+    name: "k_pitch"
+    value: 1
+  }
+  double_params {
+    name: "k_pressure_adjust"
+    value: 1
+  }
+  double_params {
+    name: "kis"
+    value: 0.1
+  }
+  double_params {
+    name: "kps"
+    value: 0.5
+  }
+  double_params {
+    name: "lag_time_s"
+    value: 1
+  }
+  double_params {
+    name: "low_switch"
+    value: -1
+  }
+  double_params {
+    name: "max_endlength"
+    value: 0.4
+  }
+  double_params {
+    name: "min_driver_torque"
+    value: 630
+  }
+  double_params {
+    name: "min_endlength"
+    value: 0
+  }
+  double_params {
+    name: "period"
+    value: 0.05
+  }
+  double_params {
+    name: "pressure_max"
+    value: 100
+  }
+  double_params {
+    name: "pressure_min"
+    value: 0
+  }
+  double_params {
+    name: "speed_weight"
+    value: 1.5
+  }
+  double_params {
+    name: "torque_baselimp"
+    value: 200
+  }
+  double_params {
+    name: "torque_max"
+    value: 1000
+  }
+  double_params {
+    name: "torque_min"
+    value: 0
+  }
+  double_params {
+    name: "up_switch"
+    value: 0.5
+  }
+  double_params {
+    name: "wait_time"
+    value: 5
+  }
+  float_params {
+    name: "avvs_acc_filter_LP_cutoff"
+    value: 0.5
+  }
+  float_params {
+    name: "avvs_acc_filter_LP_dt"
+    value: 0.05
+  }
+  float_params {
+    name: "avvs_acc_pid_d"
+    value: 0
+  }
+  float_params {
+    name: "avvs_acc_pid_i"
+    value: 0.3
+  }
+  float_params {
+    name: "avvs_acc_pid_p"
+    value: 0.5
+  }
+  float_params {
+    name: "avvs_break_range_max"
+    value: 100
+  }
+  float_params {
+    name: "avvs_break_range_min"
+    value: 0
+  }
+  float_params {
+    name: "avvs_gen_filter_LP_cutoff"
+    value: 0.5
+  }
+  float_params {
+    name: "avvs_gen_filter_LP_dt"
+    value: 0.05
+  }
+  float_params {
+    name: "avvs_speed_filter_LP_cutoff"
+    value: 0.5
+  }
+  float_params {
+    name: "avvs_speed_filter_LP_dt"
+    value: 0.05
+  }
+  float_params {
+    name: "avvs_speed_pid_d"
+    value: 0
+  }
+  float_params {
+    name: "avvs_speed_pid_i"
+    value: 0.3
+  }
+  float_params {
+    name: "avvs_speed_pid_p"
+    value: 0.5
+  }
+  float_params {
+    name: "avvs_throttle_range_max"
+    value: 100
+  }
+  float_params {
+    name: "avvs_throttle_range_min"
+    value: 0
+  }
+  bool_params {
+    name: "avvs_is_use_feedback"
+    value: true
+  }
+  bool_params {
+    name: "is_avvs_enable"
+    value: false
+  }
+  bool_params {
+    name: "is_real_car"
+    value: true
+  }
+  bool_params {
+    name: "is_start_excitation"
+    value: false
+  }
+  bool_params {
+    name: "is_test_virtualspeed"
+    value: false
+  }
+}
+OK : 0.05

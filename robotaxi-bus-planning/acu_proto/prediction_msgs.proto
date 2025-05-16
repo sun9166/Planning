@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package prediction_msgs;
+import "common_msgs.proto";
+import "perception_objects_msgs.proto";
+
+
+
+message PredictionTrajectoryPoint {
+	float x                                      = 1; 
+    float y                                      = 2;
+	float angle                                  = 3; //degree
+	double xg                                    = 4;
+	double yg                                    = 5;
+	float globalangle                            = 6; //degree
+	float v                                      = 7;
+	float a                                      = 8;
+	float t                                      = 9;
+	string lane_id                               = 10;
+} 
+
+message PredictionTrajectory {
+	float x                                       = 1; // First TrajectoryPoint x
+	float y                                       = 2; // First TrajectoryPoint y
+	float angle                                   = 3; // First TrajectoryPoint angle degree
+	double xg                                     = 4; // First TrajectoryPoint xg
+	double yg                                     = 5; //First TrajectoryPoint yg
+	float globalangle                             = 6; // First TrajectoryPoint globalangle degree
+	float probability                             = 7; //probability of this trajectory
+	string  intentbylane                          = 8; //Keep lane or change lane
+	repeated PredictionTrajectoryPoint points     = 9;
+	repeated string lane_ids                      = 10; //set from lane sequence ;
+}
+
+message PredictionObject {
+	double timestamp                             = 1;
+	uint32 id                                    = 2;
+	string type                                  = 3;
+	uint32 priority                              = 4; // 1-caution, 2-normal,3-ignore
+	float predicted_period                       = 5;
+	bool is_static                               = 6;// default = false
+	int32 is_ultra_static                        = 7;  
+	double xg                                    = 8;
+	double yg                                    = 9;
+	float globalangle                            = 10;
+	float speed                                  = 11;
+	string current_lane_id                       = 12;
+	repeated PredictionTrajectory trajectories   = 13;
+}
+
+//预测模块输出
+message PredictionObjects {
+	common_msgs.Header header                                = 1;
+	PerceptionObjects perception_objects                    = 2;
+	repeated PredictionObject prediction_obstacle           = 3;
+	double start_timestamp                                  = 4;
+	double end_timestamp                                    = 5;
+}

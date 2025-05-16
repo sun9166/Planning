@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package acu.hdmap;
+
+import "map_id.proto";
+import "map_geometry.proto";
+
+message SpeedBump {
+    optional Id id = 1;
+    optional Polygon polygon = 2;
+    repeated Id overlap_id = 3;
+}

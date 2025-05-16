@@ -1,0 +1,373 @@
+syntax = "proto3";
+
+//../protoc-3.6.1-linux-x86_64 -Ipath_to_protobuf/include -I. --cpp_out=.
+// perception_diagnose.proto
+import "google/protobuf/wrappers.proto";
+
+package calmcar.perception;
+
+enum DiagnoseModule {
+  DIAGNOSE_MODULE_INVALID = 0;
+  DIAGNOSE_MODULE_CAMERA = 1;
+  DIAGNOSE_MODULE_CAN = 2;
+  DIAGNOSE_MODULE_SYSTEM = 3;
+  DIAGNOSE_MODULE_PERCEPTION = 4;
+};
+
+message PerceptionDiagnose {
+  uint32 frame_index = 1;
+  uint64 timestamp = 2;
+
+  DiagnoseModule module_id = 3;
+  string module_name = 4;
+  uint32 sub_module_id = 5;
+  string sub_module_name = 6;
+
+  bool enable = 7;
+
+  uint32 init_status = 8;
+  uint32 input_status = 9;
+  uint32 running_status = 10;
+  uint32 function_status = 11;
+  uint32 output_status = 12;
+
+  uint32 process_runtime = 13;
+  uint32 infer_runtime = 14;
+  uint32 post_runtime = 15;
+}
+
+// For camera/can/system
+message SystemDiagnose {
+  uint32 frame_index = 1;
+  uint64 timestamp = 2;
+
+  DiagnoseModule module_id = 3;
+  string module_name = 4;
+  uint32 sub_module_id = 5;
+  string sub_module_name = 6;
+
+  bool enable = 7;
+
+  uint32 function_status = 8;  // bitwise or-ed flags
+  uint32 init_status = 9;      // bitwise or-ed flags
+  uint32 running_status = 10;  // bitwise or-ed flags
+
+  uint32 process_time = 20;  // 0.1ms
+
+  enum CameraSubmodule {
+    CAMERA_INVALID = 0;
+    CAMERA_FC = 1;
+    CAMERA_FC_NEAR = 2;
+    CAMERA_FL = 3;
+    CAMERA_FR = 4;
+    CAMERA_RC = 5;
+    CAMERA_RL = 6;
+    CAMERA_RR = 7;
+    CAMERA_FC_FAR = 8;
+  }
+  enum CameraCameraFunctionStatus {
+    CAMERA_CAMERA_FUNC_ENABLE_NONE = 0;
+    CAMERA_CAMERA_FUNC_ENABLE_CAMERA = 1;  // 1 << 0
+    CAMERA_CAMERA_FUNC_ENABLE_VIDEO = 2;   // 1 << 1
+  }
+  enum CameraCameraInitStatus {
+    CAMERA_CAMERA_INIT_SUCCESS = 0;
+    CAMERA_CAMERA_INIT_ERROR_CONFIG = 1;  // 1 << 0
+    CAMERA_CAMERA_INIT_ERROR_DEVICE = 2;  // 1 << 1
+    CAMERA_CAMERA_INIT_ERROR_LINK = 4;    // 1 << 2
+    CAMERA_CAMERA_INIT_ERROR_ISP = 8;     // 1 << 3
+  }
+  enum CameraCameraRunStatus {
+    CAMERA_CAMERA_RUN_SUCCESS = 0;
+    CAMERA_CAMERA_RUN_EOF = 1;                     // 1 << 0
+    CAMERA_CAMERA_RUN_WARN_TOO_SLOW = 2;           // 1 << 1
+    CAMERA_CAMERA_RUN_WARN_TIMESTAMP = 4;          // 1 << 2
+    CAMERA_CAMERA_RUN_WARN_TIMEOUT = 8;            // 1 << 3
+    CAMERA_CAMERA_RUN_ERROR_TIMEOUT = 16;          // 1 << 4
+    CAMERA_CAMERA_RUN_ERROR_INTERNAL_STATUS = 32;  // 1 << 5
+    CAMERA_CAMERA_RUN_ERROR_OUT_OF_MEMORY = 64;    // 1 << 6
+    CAMERA_CAMERA_RUN_ERROR_ISP = 128;             // 1 << 7
+    CAMERA_CAMERA_RUN_ERROR_LINK = 256;            // 1 << 8
+    CAMERA_CAMERA_RUN_ERROR_RESOURCE = 512;        // 1 << 9
+  }
+
+  enum CanSubmodule {
+    CAN_INVALID = 0;
+    CAN_CHASSIS = 1;
+    CAN_RTK = 2;
+    CAN_RADAR_FC = 3;
+  }
+  enum CanChassisInitStatus {
+    CAN_CHASSIS_INIT_SUCCESS = 0;
+    CAN_CHASSIS_INIT_DBC_ERROR = 1;   // 1 << 0
+    CAN_CHASSIS_INIT_PORT_ERROR = 2;  // 1 << 1
+  }
+  enum CanChassisRunStatus {
+    CAN_CHASSIS_RUN_SUCCESS = 0;
+    CAN_CHASSIS_RUN_WARN_TOO_SLOW = 1;     // 1 << 0
+    CAN_CHASSIS_RUN_ERROR_CAN_READ = 2;    // 1 << 1
+    CAN_CHASSIS_RUN_HAS_VELOCITY = 4;      // 1 << 2
+    CAN_CHASSIS_RUN_HAS_ACCLERATION = 8;   // 1 << 3
+    CAN_CHASSIS_RUN_HAS_YAW_RATE = 16;     // 1 << 4
+    CAN_CHASSIS_RUN_HAS_STEEL_ANGLE = 32;  // 1 << 5
+    CAN_CHASSIS_RUN_HAS_WHEEL_ANGLE = 64;  // 1 << 6
+  }
+  enum CanRtkInitStatus {
+    CAN_RTK_INIT_SUCCESS = 0;
+    CAN_RTK_INIT_DBC_ERROR = 1;   // 1 << 0
+    CAN_RTK_INIT_PORT_ERROR = 2;  // 1 << 1
+  }
+  enum CanRtkRunStatus {
+    CAN_RTK_RUN_SUCCESS = 0;
+    CAN_RTK_RUN_WARN_TOO_SLOW = 1;        // 1 << 0
+    CAN_RTK_RUN_ERROR_CAN_READ = 2;       // 1 << 1
+    CAN_RTK_RUN_HAS_VELOCITY = 4;         // 1 << 2
+    CAN_RTK_RUN_HAS_ACCELERATION = 8;     // 1 << 3
+    CAN_RTK_RUN_HAS_HORIZONTAL_GPS = 16;  // 1 << 4
+    CAN_RTK_RUN_HAS_ALTITUDE = 32;        // 1 << 5
+    CAN_RTK_RUN_HAS_YAW = 64;             // 1 << 6
+    CAN_RTK_RUN_HAS_GYRO_XY = 128;        // 1 << 7
+    CAN_RTK_RUN_HAS_GYRO_Z = 256;         // 1 << 8
+  }
+  enum CanRadarFunctionStatus {
+    CAN_RADAR_FUNC_NONE = 0;
+    CAN_RADAR_FUNC_ENABLE_FC = 1;
+    // TODO other radar position
+  }
+  enum CanRadarInitStatus {
+    CAN_RADAR_INIT_SUCCESS = 0;
+    CAN_RADAR_FC_INIT_DBC_ERROR = 1;   // 1 << 0
+    CAN_RADAR_FC_INIT_PORT_ERROR = 2;  // 1 << 1
+    // TODO other radar position
+  }
+  enum CanRadarRunStatus {
+    CAN_RADAR_RUN_SUCCESS = 0;
+    CAN_RADAR_FC_RUN_WARN_TOO_SLOW = 1;   // 1 << 0
+    CAN_RADAR_FC_RUN_ERROR_CAN_READ = 2;  // 1 << 1
+    // Perception has object but radar doesn't
+    CAN_RADAR_FC_RUN_NO_OBJECT = 4;  // 1 << 2
+    // TODO other radar position
+  }
+
+  enum SystemSubmodule {
+    SYSTEM_INVALID = 0;
+    SYSTEM_SYSTEM = 1;
+    SYSTEM_CAMERA = 2;
+    SYSTEM_INPUT = 3;
+    SYSTEM_CAN = 4;
+    SYSTEM_PERCEPTION = 5;
+    SYSTEM_COMMUNICATION = 6;
+    SYSTEM_EVENT = 7;
+    SYSTEM_RECORD = 8;
+  }
+  enum SystemSystemFunctionStatus {
+    SYSTEM_SYSTEM_FUNC_NONE = 0;
+    SYSTEM_SYSTEM_FUNC_ENABLE_CAMERA = 1;         // 1 << 0
+    SYSTEM_SYSTEM_FUNC_ENABLE_PERCEPTION = 2;     // 1 << 1
+    SYSTEM_SYSTEM_FUNC_ENABLE_CAN = 4;            // 1 << 2
+    SYSTEM_SYSTEM_FUNC_ENABLE_COMMUNICATION = 8;  // 1 << 3
+    SYSTEM_SYSTEM_FUNC_ENABLE_EVENT = 16;         // 1 << 4
+    SYSTEM_SYSTEM_FUNC_ENABLE_RECORD = 32;        // 1 << 5
+  }
+  enum SystemSystemInitStatus {
+    SYSTEM_SYSTEM_INIT_SUCCESS = 0;
+    SYSTEM_SYSTEM_INIT_ERROR_CAMERA = 1;         // 1 << 0
+    SYSTEM_SYSTEM_INIT_ERROR_PERCEPTION = 2;     // 1 << 1
+    SYSTEM_SYSTEM_INIT_ERROR_CAN = 4;            // 1 << 2
+    SYSTEM_SYSTEM_INIT_ERROR_COMMUNICATION = 8;  // 1 << 3
+    SYSTEM_SYSTEM_INIT_ERROR_EVENT = 16;         // 1 << 4
+    SYSTEM_SYSTEM_INIT_ERROR_RECORD = 32;        // 1 << 5
+  }
+  enum SystemSystemRunStatus {
+    SYSTEM_SYSTEM_RUN_SUCCESS = 0;
+    SYSTEM_SYSTEM_RUN_EOF = 1;                   // 1 << 0
+    SYSTEM_SYSTEM_RUN_ERROR_CAMERA = 2;          // 1 << 1
+    SYSTEM_SYSTEM_RUN_ERROR_PERCEPTION = 4;      // 1 << 2
+    SYSTEM_SYSTEM_RUN_ERROR_CAN = 8;             // 1 << 3
+    SYSTEM_SYSTEM_RUN_ERROR_COMMUNICATION = 16;  // 1 << 4
+    SYSTEM_SYSTEM_RUN_ERROR_EVENT = 32;          // 1 << 5
+    SYSTEM_SYSTEM_RUN_ERROR_RECORD = 64;         // 1 << 6
+  }
+  enum SystemCameraFunctionStatus {
+    SYSTEM_CAMERA_FUNC_NONE = 0;
+    SYSTEM_CAMERA_FUNC_ENABLE_FC = 1;        // 1 << 0
+    SYSTEM_CAMERA_FUNC_ENABLE_FC_NEAR = 2;   // 1 << 1
+    SYSTEM_CAMERA_FUNC_ENABLE_FL = 4;        // 1 << 2
+    SYSTEM_CAMERA_FUNC_ENABLE_FR = 8;        // 1 << 3
+    SYSTEM_CAMERA_FUNC_ENABLE_RC = 16;       // 1 << 4
+    SYSTEM_CAMERA_FUNC_ENABLE_RL = 32;       // 1 << 5
+    SYSTEM_CAMERA_FUNC_ENABLE_RR = 64;       // 1 << 6
+    SYSTEM_CAMERA_FUNC_ENABLE_FC_FAR = 128;  // 1 << 7
+  }
+  enum SystemCameraInitStatus {
+    SYSTEM_CAMERA_INIT_SUCCESS = 0;
+    SYSTEM_CAMERA_INIT_ERROR_FC = 1;        // 1 << 0
+    SYSTEM_CAMERA_INIT_ERROR_FC_NEAR = 2;   // 1 << 1
+    SYSTEM_CAMERA_INIT_ERROR_FL = 4;        // 1 << 2
+    SYSTEM_CAMERA_INIT_ERROR_FR = 8;        // 1 << 3
+    SYSTEM_CAMERA_INIT_ERROR_RC = 16;       // 1 << 4
+    SYSTEM_CAMERA_INIT_ERROR_RL = 32;       // 1 << 5
+    SYSTEM_CAMERA_INIT_ERROR_RR = 64;       // 1 << 6
+    SYSTEM_CAMERA_INIT_ERROR_FC_FAR = 128;  // 1 << 7
+    SYSTEM_CAMERA_INIT_ERROR_CONFIG = 256;  // 1 << 8
+    SYSTEM_CAMERA_INIT_ERROR_DEVICE = 512;  // 1 << 9
+    SYSTEM_CAMERA_INIT_ERROR_LINK = 1024;   // 1 << 10
+    SYSTEM_CAMERA_INIT_ERROR_ISP = 2048;    // 1 << 11
+  }
+  enum SystemCameraRunStatus {
+    SYSTEM_CAMERA_RUN_SUCCESS = 0;
+    SYSTEM_CAMERA_RUN_EOF = 1;              // 1 << 0
+    SYSTEM_CAMERA_RUN_WARN_TOO_SLOW = 2;    // 1 << 1
+    SYSTEM_CAMERA_RUN_WARN_TIMESTAMP = 4;   // 1 << 2
+    SYSTEM_CAMERA_RUN_ERROR_FC = 8;         // 1 << 3
+    SYSTEM_CAMERA_RUN_ERROR_FC_NEAR = 16;   // 1 << 4
+    SYSTEM_CAMERA_RUN_ERROR_FL = 32;        // 1 << 5
+    SYSTEM_CAMERA_RUN_ERROR_FR = 64;        // 1 << 6
+    SYSTEM_CAMERA_RUN_ERROR_RC = 128;       // 1 << 7
+    SYSTEM_CAMERA_RUN_ERROR_RL = 256;       // 1 << 8
+    SYSTEM_CAMERA_RUN_ERROR_RR = 512;       // 1 << 9
+    SYSTEM_CAMERA_RUN_ERROR_FC_FAR = 1024;  // 1 << 10
+    SYSTEM_CAMERA_RUN_ERROR_ISP = 2048;     // 1 << 11
+    SYSTEM_CAMERA_RUN_ERROR_LINK = 4096;    // 1 << 12
+    SYSTEM_CAMERA_RUN_WARN_TIMEOUT = 8192;  // 1 << 13
+  }
+  enum SystemInputFunctionStatus {
+    SYSTEM_INPUT_FUNC_NONE = 0;
+    SYSTEM_INPUT_FUNC_ENABLE_CSD = 1;  // 1 << 0
+    SYSTEM_INPUT_FUNC_ENABLE_DDS = 2;  // 1 << 1
+  }
+  enum SystemInputInitStatus {
+    SYSTEM_INPUT_INIT_SUCCESS = 0;
+    SYSTEM_INPUT_INIT_CSD_ERROR = 1;            // 1 << 0
+    SYSTEM_INPUT_INIT_DDS_ERROR_SUBSCRIBE = 2;  // 1 << 1
+  }
+  enum SystemInputRunStatus {
+    SYSTEM_INPUT_RUN_SUCCESS = 0;
+    SYSTEM_INPUT_RUN_CSD_EOF = 1;                   // 1 << 0
+    SYSTEM_INPUT_RUN_CSD_WARN_TOO_SLOW = 2;         // 1 << 1
+    SYSTEM_INPUT_RUN_CSD_ERROR_SIZE = 4;            // 1 << 2
+    SYSTEM_INPUT_RUN_CSD_ERROR_CONTENT = 8;         // 1 << 3
+    SYSTEM_INPUT_RUN_CSD_ERROR_OUT_OF_MEMORY = 16;  // 1 << 4
+    SYSTEM_INPUT_RUN_DDS_WARN_TOO_SLOW = 32;        // 1 << 5
+    SYSTEM_INPUT_RUN_DDS_WARN_PILOT_EVENT = 64;     // 1 << 6
+  }
+  enum SystemCanFunctionStatus {
+    SYSTEM_CAN_FUNC_NONE = 0;
+    SYSTEM_CAN_FUNC_ENABLE_CHASSIS = 1;   // 1 << 0
+    SYSTEM_CAN_FUNC_ENABLE_RTK = 2;       // 1 << 1
+    SYSTEM_CAN_FUNC_ENABLE_RADAR_FC = 4;  // 1 << 2
+    // TODO other radar position
+  }
+  enum SystemCanInitStatus {
+    SYSTEM_CAN_INIT_SUCCESS = 0;
+    SYSTEM_CAN_INIT_ERROR_CHASSIS = 1;   // 1 << 0
+    SYSTEM_CAN_INIT_ERROR_RTK = 2;       // 1 << 1
+    SYSTEM_CAN_INIT_ERROR_RADAR_FC = 4;  // 1 << 2
+    // TODO other radar position
+  }
+  enum SystemCanRunStatus {
+    SYSTEM_CAN_RUN_SUCCESS = 0;
+    SYSTEM_CAN_RUN_WARN_TOO_SLOW = 1;   // 1 << 0
+    SYSTEM_CAN_RUN_ERROR_CHASSIS = 2;   // 1 << 1
+    SYSTEM_CAN_RUN_ERROR_RTK = 4;       // 1 << 2
+    SYSTEM_CAN_RUN_ERROR_RADAR_FC = 8;  // 1 << 3
+    // TODO other radar position
+  }
+  enum SystemPerceptionInitStatus {
+    SYSTEM_PERCEPTION_INIT_SUCCESS = 0;
+    // // Only valid on perception disabled
+    SYSTEM_PERCEPTION_INIT_ERROR_CALIBRATION = 1;  // 1 << 0
+    SYSTEM_PERCEPTION_INIT_ERROR_PERCEPTION = 2;   // 1 << 1
+    SYSTEM_PERCEPTION_INIT_ERROR_DEVICE = 4;       // 1 << 2
+  }
+  enum SystemPerceptionRunStatus {
+    SYSTEM_PERCEPTION_RUN_SUCCESS = 0;
+    SYSTEM_PERCEPTION_RUN_WARN_TOO_SLOW = 1;     // 1 << 0
+    SYSTEM_PERCEPTION_RUN_ERROR_PERCEPTION = 2;  // 1 << 1
+    SYSTEM_PERCEPTION_RUN_ERROR_INPUT = 4;       // 1 << 2
+  }
+  enum SystemCommunicationFunctionStatus {
+    SYSTEM_COMMUNICATION_FUNC_NONE = 0;
+    SYSTEM_COMMUNICATION_FUNC_ENABLE_DDS = 1;            // 1 << 0
+    SYSTEM_COMMUNICATION_FUNC_ENABLE_SHARED_MEMORY = 2;  // 1 << 1
+    SYSTEM_COMMUNICATION_FUNC_ENABLE_REMOTE_RENDER = 4;  // 1 << 2
+  }
+  enum SystemCommunicationInitStatus {
+    SYSTEM_COMMUNICATION_INIT_SUCCESS = 0;
+    SYSTEM_COMMUNICATION_INIT_ERROR_DDS = 1;            // 1 << 0
+    SYSTEM_COMMUNICATION_INIT_ERROR_SHARED_MEMORY = 2;  // 1 << 1
+    SYSTEM_COMMUNICATION_INIT_ERROR_REMOTE_RENDER = 4;  // 1 << 2
+  }
+  enum SystemCommunicationRunStatus {
+    SYSTEM_COMMUNICATION_RUN_SUCCESS = 0;
+    SYSTEM_COMMUNICATION_RUN_WARN_DDS_EVENT = 1;                     // 1 << 0
+    SYSTEM_COMMUNICATION_RUN_WARN_DDS_PUBLISH_TOO_SLOW = 2;          // 1 << 1
+    SYSTEM_COMMUNICATION_RUN_ERROR_DDS_PUBLISH = 4;                  // 1 << 2
+    SYSTEM_COMMUNICATION_RUN_WARN_SHARED_MEMORY_WRITE_TOO_SLOW = 8;  // 1 << 3
+    SYSTEM_COMMUNICATION_RUN_ERROR_SHARED_MEMORY_WRITE = 16;         // 1 << 4
+    SYSTEM_COMMUNICATION_RUN_INFO_REMOTE_RENDER_HAS_CLIENT = 32;     // 1 << 5
+    SYSTEM_COMMUNICATION_RUN_WARN_REMOTE_RENDER_SEND_TOO_SLOW = 64;  // 1 << 6
+    SYSTEM_COMMUNICATION_RUN_ERROR_REMOTE_RENDER_SEND = 128;         // 1 << 7
+  }
+  enum SystemEventFunctionStatus { SYSTEM_EVENT_FUNC_NONE = 0; }
+  enum SystemEventInitStatus {
+    SYSTEM_EVENT_INIT_SUCCESS = 0;
+    SYSTEM_EVENT_INIT_ERROR = 1;  // 1 << 0
+  }
+  enum SystemEventRunStatus {
+    SYSTEM_EVENT_RUN_SUCCESS = 0;
+    SYSTEM_EVENT_RUN_WARN_TOO_SLOW = 1;  // 1 << 0
+    SYSTEM_EVENT_RUN_TRIGGER_EVENT = 2;  // 1 << 1
+  }
+  enum SystemRecordFunctionStatus {
+    SYSTEM_RECORD_FUNC_NONE = 0;
+    SYSTEM_RECORD_FUNC_ENABLE_CALIBRATION = 1;  // 1 << 0
+    SYSTEM_RECORD_FUNC_ENABLE_TIMESTAMP = 2;    // 1 << 1
+    SYSTEM_RECORD_FUNC_ENABLE_CSD = 4;          // 1 << 2
+    SYSTEM_RECORD_FUNC_ENABLE_SCREEN = 8;       // 1 << 3
+    SYSTEM_RECORD_FUNC_ENABLE_FC = 16;          // 1 << 4
+    SYSTEM_RECORD_FUNC_ENABLE_FC_NEAR = 32;     // 1 << 5
+    SYSTEM_RECORD_FUNC_ENABLE_FL = 64;          // 1 << 6
+    SYSTEM_RECORD_FUNC_ENABLE_FR = 128;         // 1 << 7
+    SYSTEM_RECORD_FUNC_ENABLE_RC = 256;         // 1 << 8
+    SYSTEM_RECORD_FUNC_ENABLE_RL = 512;         // 1 << 9
+    SYSTEM_RECORD_FUNC_ENABLE_RR = 1024;        // 1 << 10
+    SYSTEM_RECORD_FUNC_ENABLE_FC_FAR = 2048;    // 1 << 11
+  }
+  enum SystemRecordInitStatus {
+    SYSTEM_RECORD_INIT_SUCCESS = 0;
+    SYSTEM_RECORD_INIT_ERROR_CALIBRATION = 1;  // 1 << 0
+    SYSTEM_RECORD_INIT_ERROR_TIMESTAMP = 2;    // 1 << 1
+    SYSTEM_RECORD_INIT_ERROR_CSD = 4;          // 1 << 2
+    SYSTEM_RECORD_INIT_ERROR_SCREEN = 8;       // 1 << 3
+    SYSTEM_RECORD_INIT_ERROR_FC = 16;          // 1 << 4
+    SYSTEM_RECORD_INIT_ERROR_FC_NEAR = 32;     // 1 << 5
+    SYSTEM_RECORD_INIT_ERROR_FL = 64;          // 1 << 6
+    SYSTEM_RECORD_INIT_ERROR_FR = 128;         // 1 << 7
+    SYSTEM_RECORD_INIT_ERROR_RC = 256;         // 1 << 8
+    SYSTEM_RECORD_INIT_ERROR_RL = 512;         // 1 << 9
+    SYSTEM_RECORD_INIT_ERROR_RR = 1024;        // 1 << 10
+    SYSTEM_RECORD_INIT_ERROR_FC_FAR = 2048;    // 1 << 11
+  }
+  enum SystemRecordRunStatus {
+    SYSTEM_RECORD_RUN_SUCCESS = 0;
+    SYSTEM_RECORD_RUN_WARN_TOO_SLOW = 1;      // 1 << 0
+    SYSTEM_RECORD_RUN_ERROR_CALIBRATION = 2;  // 1 << 1
+    SYSTEM_RECORD_RUN_ERROR_TIMESTAMP = 4;    // 1 << 2
+    SYSTEM_RECORD_RUN_ERROR_CSD = 8;          // 1 << 3
+    SYSTEM_RECORD_RUN_ERROR_SCREEN = 16;      // 1 << 4
+    SYSTEM_RECORD_RUN_ERROR_FC = 32;          // 1 << 5
+    SYSTEM_RECORD_RUN_ERROR_FC_NEAR = 64;     // 1 << 6
+    SYSTEM_RECORD_RUN_ERROR_FL = 128;         // 1 << 7
+    SYSTEM_RECORD_RUN_ERROR_FR = 256;         // 1 << 8
+    SYSTEM_RECORD_RUN_ERROR_RC = 512;         // 1 << 9
+    SYSTEM_RECORD_RUN_ERROR_RL = 1024;        // 1 << 10
+    SYSTEM_RECORD_RUN_ERROR_RR = 2048;        // 1 << 11
+    SYSTEM_RECORD_RUN_ERROR_FC_FAR = 4096;    // 1 << 12
+  }
+}
+
+message Diagnose {
+  repeated PerceptionDiagnose perception_diagnose = 1;
+  repeated SystemDiagnose system_diagnose = 2;
+}

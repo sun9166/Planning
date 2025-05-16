@@ -1,0 +1,281 @@
+syntax = "proto3";
+
+package mapengine_msgs;
+
+import "common_msgs.proto";
+
+message BusinessArea {
+	string name = 1;
+	string type = 2;
+}
+
+
+
+message MissionPoint {
+	double xg                 = 1;
+	double yg 		      = 2;
+	float heading             = 3;
+}
+message MissionLine {
+	string line_id           = 1;
+	int32 start_index        = 2;
+	int32 end_index          = 3;
+}
+
+message MissionArea {
+	string area_id 		 = 1;
+     string line_id            = 2;
+}
+
+message MissionContent {
+	MissionPoint point        = 1;
+	MissionLine line          = 2;
+	MissionArea area          = 3;
+	int32 type                = 4;  //1-point 2-line 3-area 4-park
+	int32 mission_id          = 5;
+	bool is_stop              = 6;
+}
+
+message RoutePoint {
+     double xg               = 1;
+	double yg               = 2;
+	float heading           = 3;
+	int32 length            = 4;
+}
+
+message MissionRoute {
+	repeated string global_road          = 1;
+	repeated RoutePoint global_path      = 2;
+	float length                         = 3;
+	float dis_to_next_turn               = 4;
+	int32 next_turn_type                 = 5;
+}
+
+message ImuInfo {
+	double time_stamp                = 1;
+	double xg                        = 2;
+	double yg                        = 3;
+	double yaw                       = 4;
+	double velocity                  = 5;
+	double vx                        = 6;
+	double vy                        = 7;
+	double loc_xg_dr                 = 8;
+	double loc_yg_dr                 = 9;
+	double loc_yaw_dr                = 10;
+	bool correction_flag              = 11;
+}
+
+message TrafficLight {
+	string id                         = 1;
+	bool key_light                    = 2;
+	int32 lon_index                   = 3;
+	float xg                          = 4;
+	float yg                          = 5;
+	float globalangle                 = 6;
+	float light_s                     = 7;
+	string lane_id                    = 8;
+	repeated string same_light_ids    = 9;
+}
+
+message Point {
+	double x                          = 1;
+	double y                          = 2;
+	float angle                       = 3;
+}
+
+message ReferencePoint {
+	float x                           = 1;
+	float y                           = 2;
+	float angle                       = 3;
+	double xg                         = 4;
+	double yg                         = 5;
+	float angleglobal                 = 6;
+	int64 index                       = 7;
+	float length                      = 8;
+	float curvature                   = 9;
+	int32 direction                   = 10;
+}
+
+message AreaRange {
+	string id                         = 1;
+     int32 type                        = 2;  //1->隔离带; 2->栏杆; 3->花坛; 4->马路牙子
+     repeated Point area_points        = 3;
+}
+
+message DisRange {
+	string id                         = 1;
+	float start_s                     = 2;
+	float end_s                       = 3;
+	float value                       = 4;
+	int32 type                        = 5;
+}
+
+message FuncInfo {
+     int32 key       = 1;
+     float a         = 2;
+	float b         = 3;
+	float c         = 4;
+	float start_x   = 5;
+	float end_x     = 6;
+	int32 life_time = 7;
+}
+
+message RelationLane {
+	string id                         = 1;
+	float start_s                     = 2;
+	float end_s                       = 3;
+	float relation_start_s            = 4;
+	float relation_end_s              = 5;
+	int32 lon_index                   = 6;
+	repeated int32 confluence_index   = 7;
+	int32 type                        = 8;
+}
+
+message Line {
+	int32 line_direction              = 1;
+	float dis_to_line                 = 2;
+	float dis_to_diversion            = 3;
+	float dis_to_merge                = 4;
+	float first_lane_start_s          = 5;
+	float dis_to_driving              = 6;
+	bool able_driving                 = 7;
+	repeated string lane_ids                   = 8;
+	repeated RelationLane relation_lanes       = 9;
+	repeated DisRange lane_turns               = 10;
+	repeated DisRange lane_types               = 11;
+	repeated DisRange left_bd_types            = 12;
+	repeated DisRange right_bd_types           = 13;
+	repeated DisRange dis_to_ends              = 14;
+	repeated DisRange expected_speeds          = 15;
+	repeated DisRange left_passable_distances  = 16;
+	repeated DisRange right_passable_distances = 17;
+	repeated DisRange dis_to_speed_bumps       = 18;
+	repeated DisRange dis_to_forbid_areas      = 19;
+	repeated DisRange dis_to_junctions         = 20;
+	repeated DisRange dis_to_crosswalks        = 21;
+	repeated DisRange dis_to_yield_areas       = 22;
+	repeated DisRange dis_to_stop_areas        = 23;
+	repeated AreaRange isolationbelts          = 24;
+	float laneside_left               = 25;
+	float laneside_right              = 26;
+	bool contain_light_junction       = 27;
+	float contain_light_s             = 28;
+	repeated TrafficLight trafficlights        = 29;
+	repeated ReferencePoint map_points         = 30;
+	repeated ReferencePoint left_boundary      = 31;
+	repeated ReferencePoint right_boundary     = 32;
+}
+
+message LineList {
+     Line frontline           = 1; // 一组前向车道合集，合流之后可能对应多组后向车道
+     repeated Line backlines  = 2;
+     double dis_lc            = 3;
+	int32 first_lc_time      = 4;
+	int32 first_lc_index     = 5;
+	int32 all_lc_time        = 6;
+	int32 global_cost        = 7;
+}
+
+message MapInfo {
+	int32 current_line_index        = 1;
+	repeated LineList alllinelists  = 2;
+	LineList revlinelist            = 3;
+	Point startpoint                = 4;
+	Point endpoint                  = 5;
+	float dis2endpoint              = 6;
+	bool change_task                = 7;
+}
+
+//全局路径规划输入
+message GlobalPathCommand {
+	//std_msgs/Header header = 1;
+	common_msgs.Header   header                             = 1; 
+	int32     mission_command                    = 2;
+	repeated MissionContent mission_request_vec = 3;
+}
+
+//全局路径规划输出
+message GlobalPathResult {
+	// std_msgs/Header header                     = 1; //ros自带的基础类型
+	common_msgs.Header header                                 = 1; 
+	int32 result                                  = 2;
+	repeated MissionContent mission_response_vec  = 3;
+	repeated MissionRoute mission_route_vec       = 4;
+}
+
+//导航指令输入
+message NavigationCommand {
+	int32 mission_id                     = 1;
+	int32  command                       = 2;
+	MissionContent content               = 3;
+}
+//导航指令反馈输出
+message NavigationResult {
+	int32 cur_mission_id                 = 1;
+     int32 result                         = 2;
+}
+
+//周期导航输出
+message Navigation {
+	common_msgs.Header header                      = 1;
+	int32 id                           = 2;
+	int32 map_type                     = 3;
+	int32 status                       = 4;
+	repeated FuncInfo last_vision_info          = 5;
+	repeated FuncInfo vision_info               = 6;
+	MapInfo map_info                   = 7;
+	ImuInfo last_imu_data              = 8;
+	ImuInfo imu_data                   = 9;
+	ImuInfo last_correct_imu_data      = 10;
+	ImuInfo correct_imu_data           = 11;
+}
+//导航任务状态输出
+message NavMission {
+	// std_msgs/Header header            = 1; //ros自带的基础类型
+	common_msgs.Header header            = 1; 
+     int32 id                             = 2; //当前执行的任务id
+	int32 type                           = 3; 
+	int32 status                         = 4; 
+	float cur_mission_total              = 5; 
+	float cur_mission_left               = 6; 
+	float all_mission_total              = 7; 
+	float all_mission_left               = 8; 
+	repeated BusinessArea business_areas = 9; 
+	repeated string remain_road_id       = 10; 
+	bool global_road_success             = 11; 
+	bool navigation_success              = 12; 
+	bool find_current_lane               = 13; 
+	repeated string failed_reason        = 14; 
+}
+
+message Debug {
+	//service debug
+	GlobalPathCommand route_command = 1;
+	NavigationCommand nav_command   = 2;
+	// routeplan debug
+	repeated string mission_road_id = 3;
+	repeated string global_road     = 4;
+	bool global_road_success        = 5;
+	// navigation debug
+	bool navigation_success         = 6;
+	bool find_current_lane          = 7;
+	repeated string failed_reason   = 8;
+	uint32 current_road_index       = 9;
+	float routeplan_cost_time       = 10;
+	float globallane_cost_time      = 11;
+	float navigation_cost_time      = 12;
+	//time matching debug
+	float min_delta                 = 13;
+	repeated double loc_list_time   = 14;
+	uint32 sim_vision_time          = 15;
+	// vision correction debug
+	bool in_tunnel_flag             = 16;
+	bool gccs_dr                    = 17;
+	repeated FuncInfo vision_info   = 18;
+	repeated FuncInfo map_info      = 19;
+	int32 loc_vision_state          = 20; // 个位代表定位状态，十位代表感知状态
+	string loc_vision_string        = 21;
+	float correction_cost           = 23;
+	float delta_yaw                 = 24;
+	float delta_dis                 = 25;
+}

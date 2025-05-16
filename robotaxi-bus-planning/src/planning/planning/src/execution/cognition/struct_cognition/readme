@@ -1,0 +1,10 @@
+cognition
+--conf						参数配置
+--map_process				车道模型匹配与时间同步
+--object_process			障碍物预处理：感知信息+预测信息
+--referenceline_frame		车道模型处理
+	--line_gap				车道模型换道可行空间评价
+	--new_path_info			局部规划车道模型更新
+	--projection			车道模型语义信息计算
+	--st_map				车道模型概率栅格st图计算
+--scenario					场景识别

@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+import "map_id.proto";
+
+package acu.hdmap;
+
+message RoadNode {
+    enum RoadTurn {
+        NO_TURN = 1;
+        LEFT_TURN = 2;
+        RIGHT_TURN = 3;
+        U_TURN = 4;
+    };
+    optional Id id = 1;
+    optional double length = 2;
+    optional double speed_limit = 3;
+    optional RoadTurn turn = 4;
+    repeated Id successor_id = 5;
+    repeated Id predecessor_id = 6;
+}
+
+message Roadnet {
+    repeated RoadNode road_node = 1;
+}

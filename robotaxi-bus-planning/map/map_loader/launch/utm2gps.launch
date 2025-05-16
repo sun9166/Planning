@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+
+<launch>
+	<node pkg="map_loader" type="utm2gps" name="utm2gps" output="screen">
+    	<param type="double" value="275826.95" name="utm_xg"/>
+    	<param type="double" value="3479108.7" name="utm_yg"/>
+    	<!--suzhou utm_zone = 51 -->
+    	<param type="int" value="51" name="utm_zone"/>
+    </node>
+</launch>

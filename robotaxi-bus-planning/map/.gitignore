@@ -1,0 +1,8 @@
+*.kdev4
+.vscode
+*.vscode
+*.ycm_extra_conf.py
+*.zip
+*.tar.gz
+*.tar
+pointmap/map/raw_map/*.pcd

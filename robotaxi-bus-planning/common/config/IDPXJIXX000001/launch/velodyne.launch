@@ -1,0 +1,137 @@
+<launch>
+
+  <param type="double" value="1.86" name="lengthWheelBase"/>
+  <param type="double" value="0.65" name="frontAxleToFront"/>
+
+    <!-- velodyne driver -->
+  <node pkg="velodyne_driver" type="driver_node" name="velodyne_driver_0" >
+    <remap from="/velodyne_packets" to="/velodyne_packets_0"/>
+  </node> 
+
+  <!-- velodyne pointcloud  -->
+  <node pkg="velodyne_pointcloud" type="convert_node" name="velodyne_pointcloud_0" >
+    <remap from="/velodyne_packets" to="/velodyne_packets_0"/>
+    <remap from="/velodyne_points" to="/lidar_points_0"/>
+  </node> 
+
+<!--   <node pkg="velodyne_pointcloud" type="compensator_node" name="compensator_node_0">
+    <remap from="/velodyne_points" to="/lidar_points_0"/>
+    <remap from="/velodyne_compensated_points" to="/driver/sensor/lidar/compensator/pointcloud_0"/>
+  </node> -->
+
+     <!-- velodyne driver -->
+  <node pkg="velodyne_driver" type="driver_node" name="velodyne_driver_1">
+    <remap from="/velodyne_packets" to="/velodyne_packets_1"/>
+  </node> 
+
+  <!-- velodyne pointcloud  -->
+  <node pkg="velodyne_pointcloud" type="convert_node" name="velodyne_pointcloud_1" >
+    <remap from="/velodyne_packets" to="/velodyne_packets_1"/>
+    <remap from="/velodyne_points" to="/lidar_points_1"/>
+  </node> 
+
+<!--   <node pkg="velodyne_pointcloud" type="compensator_node" name="compensator_node_1">
+    <remap from="/velodyne_points" to="/lidar_points_1"/>
+    <remap from="/velodyne_compensated_points" to="/driver/sensor/lidar/compensator/pointcloud_1"/>
+  </node> -->
+
+     <!-- velodyne driver -->
+  <node pkg="velodyne_driver" type="driver_node" name="velodyne_driver_2" >
+    <remap from="/velodyne_packets" to="/velodyne_packets_2"/>
+  </node> 
+
+  <!-- velodyne pointcloud  -->
+  <node pkg="velodyne_pointcloud" type="convert_node" name="velodyne_pointcloud_2" >
+    <remap from="/velodyne_packets" to="/velodyne_packets_2"/>
+    <remap from="/velodyne_points" to="/lidar_points_2"/>
+  </node> 
+
+<!--   <node pkg="velodyne_pointcloud" type="compensator_node" name="compensator_node_2">
+    <remap from="/velodyne_points" to="/lidar_points_2"/>
+    <remap from="/velodyne_compensated_points" to="/driver/sensor/lidar/compensator/pointcloud_2"/>
+  </node> -->
+
+
+    <!--velodyne driver-->
+    <param type="string" value="192.168.1.201" name="velodyne_driver_0/device_ip"/>
+    <param type="string" value="base_link" name="velodyne_driver_0/frame_id"/>
+    <param type="string" value="VLP16" name="velodyne_driver_0/model"/>
+    <param type="int" value="3201" name="velodyne_driver_0/firing_data_port"/>
+    <param type="bool" value="true" name="velodyne_driver_0/use_sensor_sync"/>
+
+    <!--velodyne pointcloud-->
+    <param value="$(find velodyne_pointcloud)/params/VLP16.yaml" name="velodyne_pointcloud_0/calibration"/>
+    <param type="string" value="VLP16" name="velodyne_pointcloud_0/model"/>
+    <param type="double" value="130.0" name="velodyne_pointcloud_0/max_range"/>
+    <param type="double" value="0.1" name="velodyne_pointcloud_0/min_range"/>
+    <param type="bool" value="true" name="velodyne_pointcloud_0/organized"/>
+    <param type="bool" value="true" name="velodyne_pointcloud_0/enable_coordinate_transformation"/>
+    <param type="double" value="1.25" name="velodyne_pointcloud_0/car_left"/>
+    <param type="double" value="-1.25" name="velodyne_pointcloud_0/car_right"/>
+    <param type="double" value="0.2" name="velodyne_pointcloud_0/car_front"/>
+    <param type="double" value="-5.0" name="velodyne_pointcloud_0/car_back"/>
+    <param type="double" value="4.0" name="velodyne_pointcloud_0/car_top"/>
+    <param type="double" value="-4.0" name="velodyne_pointcloud_0/car_bottom"/>
+    <param type="double" value="-1.55" name="velodyne_pointcloud_0/Xoffset"/>
+    <param type="double" value="0.60" name="velodyne_pointcloud_0/Yoffset"/>
+    <param type="double" value="1.46" name="velodyne_pointcloud_0/Zoffset"/>
+    <param type="double" value="32.00" name="velodyne_pointcloud_0/Roll"/>
+    <param type="double" value="-1.0" name="velodyne_pointcloud_0/Pitch"/>
+    <param type="double" value="0.3" name="velodyne_pointcloud_0/Yaw"/>  
+
+    <!--velodyne driver-->
+    <param type="string" value="192.168.1.203" name="velodyne_driver_1/device_ip"/>
+    <param type="string" value="base_link" name="velodyne_driver_1/frame_id"/>
+    <param type="string" value="VLP16" name="velodyne_driver_1/model"/>
+    <param type="int" value="3203" name="velodyne_driver_1/firing_data_port"/>
+    <param type="bool" value="true" name="velodyne_driver_1/use_sensor_sync"/>
+    
+
+    <!--velodyne pointcloud-->
+    <param value="$(find velodyne_pointcloud)/params/VLP16.yaml" name="velodyne_pointcloud_1/calibration"/>
+    <param type="string" value="VLP16" name="velodyne_pointcloud_1/model"/>
+    <param type="double" value="130.0" name="velodyne_pointcloud_1/max_range"/>
+    <param type="double" value="0.1" name="velodyne_pointcloud_1/min_range"/>
+    <param type="bool" value="true" name="velodyne_pointcloud_1/organized"/>
+    <param type="bool" value="true" name="velodyne_pointcloud_1/enable_coordinate_transformation"/>
+    <param type="double" value="1.25" name="velodyne_pointcloud_1/car_left"/>
+    <param type="double" value="-1.25" name="velodyne_pointcloud_1/car_right"/>
+    <param type="double" value="0.2" name="velodyne_pointcloud_1/car_front"/>
+    <param type="double" value="-5.0" name="velodyne_pointcloud_1/car_back"/>
+    <param type="double" value="4.0" name="velodyne_pointcloud_1/car_top"/>
+    <param type="double" value="-4.0" name="velodyne_pointcloud_1/car_bottom"/>
+    <param type="double" value="-1.55" name="velodyne_pointcloud_1/Xoffset"/>
+    <param type="double" value="-0.60" name="velodyne_pointcloud_1/Yoffset"/>
+    <param type="double" value="1.45" name="velodyne_pointcloud_1/Zoffset"/>
+    <param type="double" value="-33.05" name="velodyne_pointcloud_1/Roll"/>
+    <param type="double" value="-2.81" name="velodyne_pointcloud_1/Pitch"/>
+    <param type="double" value="0.35" name="velodyne_pointcloud_1/Yaw"/>  
+
+    <!--velodyne driver-->
+    <param type="string" value="192.168.1.207" name="velodyne_driver_2/device_ip"/>
+    <param type="string" value="base_link" name="velodyne_driver_2/frame_id"/>
+    <param type="string" value="VLP32C" name="velodyne_driver_2/model"/>
+    <param type="int" value="2005" name="velodyne_driver_2/firing_data_port"/>
+    <param type="bool" value="true" name="velodyne_driver_2/use_sensor_sync"/>
+
+    <!--velodyne pointcloud-->
+    <param value="$(find velodyne_pointcloud)/params/VLP32C.yaml" name="velodyne_pointcloud_2/calibration"/>
+    <param type="string" value="VLP32C" name="velodyne_pointcloud_2/model"/>
+    <param type="double" value="130.0" name="velodyne_pointcloud_2/max_range"/>
+    <param type="double" value="0.1" name="velodyne_pointcloud_2/min_range"/>
+    <param type="bool" value="true" name="velodyne_pointcloud_2/organized"/>
+    <param type="bool" value="true" name="velodyne_pointcloud_2/enable_coordinate_transformation"/>
+    <param type="double" value="1.25" name="velodyne_pointcloud_2/car_left"/>
+    <param type="double" value="-1.25" name="velodyne_pointcloud_2/car_right"/>
+    <param type="double" value="0.2" name="velodyne_pointcloud_2/car_front"/>
+    <param type="double" value="-5.0" name="velodyne_pointcloud_2/car_back"/>
+    <param type="double" value="4.0" name="velodyne_pointcloud_2/car_top"/>
+    <param type="double" value="-4.0" name="velodyne_pointcloud_2/car_bottom"/>
+    <param type="double" value="-1.55" name="velodyne_pointcloud_2/Xoffset"/>
+    <param type="double" value="0.0" name="velodyne_pointcloud_2/Yoffset"/>
+    <param type="double" value="1.72" name="velodyne_pointcloud_2/Zoffset"/>
+    <param type="double" value="-0.04" name="velodyne_pointcloud_2/Roll"/>
+    <param type="double" value="-1.07" name="velodyne_pointcloud_2/Pitch"/>
+    <param type="double" value="0.5" name="velodyne_pointcloud_2/Yaw"/>  
+
+</launch>

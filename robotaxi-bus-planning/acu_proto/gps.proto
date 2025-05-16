@@ -1,0 +1,60 @@
+syntax = "proto3";
+package gps.proto;
+
+message Imu {
+  // accelerometer g(9.8m/s^2)
+  double accelerometer_x = 1;
+  double accelerometer_y = 2;
+  double accelerometer_z = 3;
+
+  // gyroscope rate deg/s
+  double gyroscope_x = 4;
+  double gyroscope_y = 5;
+  double gyroscope_z = 6;
+
+  uint64 timestamp = 7;
+}
+
+message Gps {
+  double latitude = 1;
+  double longitude = 2;
+  double height = 3;
+
+  // NMEA2000 protocol info
+  int64 hour = 6;
+  int64 minute = 7;
+  int64 second = 8;
+  int64 millisecond = 9;
+  int64 day = 10;
+  int64 month = 11;
+  int64 year = 12;
+
+
+  // IMU data
+  repeated Imu imu = 18;
+
+  // localRotationY degree
+  double yaw = 19;
+  // localRotationX degree
+  double pitch = 20;
+  // localRotationZ degree
+  double roll = 21;
+
+  // Horizontal Velocity m/s
+  double vh = 22;
+  // Up Velocity m/s
+  double vu = 23;
+  // North Velocity m/s
+  double vn = 24;
+  // East Velocity m/s
+  double ve = 25;
+  // GPS status
+  int32 status = 26;
+
+  uint64 timestamp = 27;
+
+  // GPS week since 1980-1-6
+  int32 time_week = 28;
+  // current week seconds
+  double time_second = 29;
+}

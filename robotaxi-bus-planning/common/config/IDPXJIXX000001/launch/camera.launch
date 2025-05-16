@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<launch>
+    <node name="ivcamera" pkg="ivcamera" type="ivcamera"/>
+    <param name="framewidth"  value="320" type="int"/>
+    <param name="frameheight" value="240" type="int"/>
+    <!--sudo rmmod uvcvideo
+		sudo modprobe uvcvideo quirks=128 -->
+</launch>

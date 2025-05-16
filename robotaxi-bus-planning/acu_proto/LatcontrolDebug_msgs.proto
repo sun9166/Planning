@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package LatcontrolDebug_msgs;
+
+message LatcontrolDebug {
+    float 	midback =1;
+    float 	midfront =2;
+    float   lat_err_front =3;
+    float 	heading =4;
+    float 	leftfront =5;
+    float 	rightfront =6;
+    float 	leftback =7;
+    float 	rightback =8;
+    float 	dist_preview =9;
+    float 	x_previewpoint =10;
+    float 	y_previewpoint =11;
+    float 	R =12;
+    float   eps_speed =13;
+    float 	temp1 =14;
+    float 	temp2 =15;
+    float 	temp3 =16;
+    float 	temp4 =17;
+}

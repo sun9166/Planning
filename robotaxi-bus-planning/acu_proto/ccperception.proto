@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+import "perception_types.proto";
+import "perception.proto";
+import "lidar_perception.proto";
+import "vehicle_info.proto";
+
+package calmcar.perception;
+
+
+message PointXYZI {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+  int32 i = 4;
+}
+
+message SingleLidarData {
+  // single lidar input timestamp
+  int64 timestamp = 1;
+
+  // custom lidar id
+  int32 lidar_sensor_id = 2;
+  // custom lidar name or desc
+  string lidar_sensor_name = 3;
+
+  // lidar point
+  repeated PointXYZI points = 4;
+  repeated bytes scan_msg = 5;
+  bytes difop_msg = 6;
+  float offset_x = 7;
+  float offset_y = 8;
+  float offset_z = 9;
+  float yaw = 10;
+  float roll = 11;
+  float pitch = 12;
+
+   //  lidar type
+   string lidar_sensor_type = 13;
+
+}
+
+message RawLidarFrame{
+  // timestamp  of synchronization of all radars
+  int64 timestamp = 1;
+
+  // custom  process frame index
+  int64 frame_index = 2;
+
+  // current frame received lidar data
+  repeated SingleLidarData single_lidar_data = 3;
+}
+
+message CCPerceptionFrame{
+  // Message publishing time
+  uint64 sync_timestamp = 1;
+
+ // Camera Sensor timestamp for nano-second.
+  uint64 camera_timestamp = 2;
+
+ // Lidar Sensor timestamp for nano-second.
+  uint64 lidar_timestamp = 3;
+
+  bool enable_camera_output = 4;
+  PerceptionFrame vision_perception = 5;
+
+  bool enable_lidar_output = 6;
+  LidarPerceptionFrame lidar_perception = 7;
+
+  bool enable_fusion_output = 8;
+  PerceptionFrame fusion_perception = 9;
+
+  // internal: support multi lidar data
+  RawLidarFrame raw_lidar_frame = 21;
+
+  vehicle_info.proto_msg.VehicleInfo vehicle_info = 22;
+}

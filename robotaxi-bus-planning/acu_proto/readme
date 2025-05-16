@@ -1,0 +1,1 @@
+../protoc-linux-x86_64 -I../../../3rdparty/protobuf/v3.6.1/Linux/x86_64/include -I. --cpp_out=. perception.proto

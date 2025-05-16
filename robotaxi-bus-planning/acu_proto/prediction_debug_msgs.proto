@@ -1,0 +1,162 @@
+syntax = "proto3";
+
+package prediction_debug_msgs;
+
+message Exit {
+	string exit_lane_id = 1;
+	double x            = 2;
+	double y            = 3;
+	float prob          = 4;
+}
+message InteractiveCrossWalkInfo {
+	string id            = 1;
+	double start_pos_xg  = 2;
+	double start_pos_yg  = 3;
+	double end_pos_xg    = 4;
+	double end_pos_yg    = 5;
+	bool has_id          = 6;
+	bool has_pos         = 7;
+}
+message InteractiveId {
+	repeated string ids = 1;
+}
+message InteractiveLaneInfo {
+	string lane_id      = 1;
+	double cross_pos_xg = 2;
+	double cross_pos_yg = 3;
+	double start_pos_xg = 4;
+	double start_pos_yg = 5;
+	double cross_s      = 6;
+}
+message Junctionnet {
+	string lane_id       = 1;
+	double cross_pos_xg  = 2;
+	double cross_pos_yg  = 3;
+	double start_pos_xg  = 4;
+	double start_pos_yg  = 5;
+	double cross_s       = 6;
+}
+
+message JunctionProperty {
+	string lane_id          = 1;
+	int32 is_exit           = 2;
+	int32 is_overlap        = 3;
+}
+
+message KeyJunctionObject {
+	int32 id                = 1;
+	double x                = 2;
+	double y                = 3; 
+	float theta             = 4;
+	float length            = 5;
+	float width             = 6;
+	float height            = 7;
+	int32 consider_type     = 8;
+}
+
+message KeyObject {
+	int32 id                = 1;
+	double x                = 2;
+	double y                = 3;
+	float theta             = 4; 
+	float length            = 5;
+	float width             = 6;
+	float height            = 7;
+	bool need_consider      = 8;
+}
+
+message LaneInfo {
+	string lane_id                = 1;
+	double pos_s                  = 2;
+	double pos_l                  = 3;
+	double heading_diff           = 4;
+	double dist_to_left_boundary  = 5;
+	double dist_to_right_boundary = 6;
+	bool is_on_lane               = 7;
+}
+
+message LaneProperty {
+	string lane_id                   = 1;
+	float total_length               = 2;
+	float start_s                    = 3;
+	float end_s                      = 4;
+	int32 forward_history_num        = 5;
+	int32 backward_history_num       = 6;
+	int32 forward_obs_num            = 7;
+	int32 backward_obs_num           = 8;
+	bool is_lane_checked             = 9;
+	bool is_object_checked           = 10;
+	repeated int32 obs_start_to_end  = 11;
+	repeated int32 obs_end_to_start  = 12;
+}
+message Lanenet {
+	repeated LaneProperty lane_net = 1;
+	repeated KeyObject objects     = 2;
+}
+message ObjectFeature {
+	uint32 id                         = 1;
+	int32 type                        = 2;
+	double x                          = 3;
+	double y                          = 4;
+	double z                          = 5;
+	double length                     = 6;
+	double width                      = 7;
+	double height                     = 8;
+	double speed                      = 9;
+	double acc                        = 10;
+	double final_heading              = 11;
+	bool is_static                    = 12;
+	bool is_illegal                   = 13;
+	int32 is_ultra_static             = 14;
+	int32 priority                     = 15;
+	string lane_id                    = 16;
+	repeated string current_lane_ids  = 17;
+	repeated string nearby_lane_ids   = 18;
+	string enter_lane                 = 19;
+	repeated Exit exits               = 20;
+	Exit off_lane_exit                = 21;
+	int32 evaluator_type              = 22;
+	int32 sub_evaluator_type          = 23;
+	int32 predictor_type              = 24;
+	bool need_exception_handling      = 25;
+}
+
+message SingleInteractiveCrossWalkInfo {
+	string light_id                              = 1;
+	repeated InteractiveCrossWalkInfo crosswalks = 2;
+}
+
+message SingleInteractiveLaneInfo {
+	string light_id                           = 1;
+	repeated InteractiveLaneInfo cross_lanes  = 2;
+}
+
+message TrafficLightFeature {
+	string light_id                     = 1;
+	string lane_id                      = 2;
+	int32 lane_turn                     = 3;
+	int32 signal_type                   = 4;
+	int32 last_color                    = 5;
+	int32 current_color                 = 6;
+	int32 detect_keep_frames            = 7;
+	int32 infer_keep_frames             = 8;
+	bool is_seen                        = 9;
+	bool is_passable                    = 10;
+	repeated string associated_lane_ids = 11;
+	double start_heading                = 12;
+	double end_heading                  = 13;
+}
+message SignalFeature {
+	repeated TrafficLightFeature candidate_lights                = 1;
+	repeated TrafficLightFeature assistant_lights                = 2; 
+	repeated SingleInteractiveLaneInfo candidate_cross_lanes     = 3;
+	repeated SingleInteractiveCrossWalkInfo candidate_crosswalks = 4;
+}
+
+message ObjectsFeature {
+	ObjectFeature self_pos_feature          = 1;
+	repeated ObjectFeature objects_feature  = 2;
+	SignalFeature signal_feature            = 3;
+	double cost_time                        = 4;
+	string err_msg                          = 5;
+}

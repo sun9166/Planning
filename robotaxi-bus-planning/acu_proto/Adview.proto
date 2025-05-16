@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package Adview.proto;
+
+message Header {
+  double timestamp_sec = 1;
+  string module_name = 2;
+  uint32 sequence_num = 3;         // default-0, new task +1, trans 3 times per 200ms
+  string version = 4 ;
+}
+
+message Taskpoint {
+    int32 mission_id                = 1;
+    double lon                       = 2;   //WGS84 
+    double lat                       = 3;
+    float angle                     = 4;    // reserved
+    int32 taskpoint_type             = 5;    // 0-goal point, 1-route point
+}
+
+message AdviewCmd {
+    Header header                   = 1;
+    int32 business_mode_req          = 2;    // 0-default,1-autodrive, 2-reserved for mapcollection,calibration,remotedrive...
+    int32 task_cmd                   = 3;    // 0-default,1-init,2-start task,3-stop task, 4-goto next stop
+    repeated Taskpoint task_points  = 4;
+    int32 whether_stop_on_route      = 5;    // 0-not stop, 1-stop
+    int32 cycle_task                 = 6;    // 0-not cycle,1-cycle task
+}

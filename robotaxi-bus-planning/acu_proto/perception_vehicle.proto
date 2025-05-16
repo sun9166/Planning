@@ -1,0 +1,16 @@
+syntax = "proto3";
+package calmcar.perception;
+
+message DashBoard {
+  // Vehicle Speed in meters per second.
+  float speed_mps = 1;
+
+  // in rad, negative for clockwise, positive for count-clockwise
+  float yaw_rate = 2; // rad/s
+}
+
+
+message Vehicle {
+  // Measurement values from dashboard and chassis
+  DashBoard dash_board = 1;
+}

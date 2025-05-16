@@ -1,0 +1,168 @@
+syntax = "proto2";
+
+package acu.common;
+
+// Error codes enum for API's categorized by modules.
+enum ErrorCode {
+  OK = 0;
+  
+  /*--------------------------Localization module error codes start from here-----------------------------*/
+  LOCALIZATION_IMU_HARDWARE_0_ERROR         = 0x0010;     // localization status isn't very well!
+  LOCALIZATION_IMU_HARDWARE_1_ERROR         = 0x0011;     // localization failed!
+  LOCALIZATION_IMU_HARDWARE_2_ERROR         = 0x0012;     // no imu data!
+
+  LOCALIZATION_LOCPOSE_0_ERROR              = 0x0100;     // no locpose data or out of time limit!
+
+  HDMAP_DATA_ERROR                          = 0x0200;     //Hdmap loading failed!
+
+  /*--------------------------Perception module error codes start from here-------------------------------*/
+  PERCEPTION_LIDAR_HARDWARE_0_ERROR         = 0x1000;     // velodyne_packets_0 no data or out of time limit!
+  PERCEPTION_LIDAR_HARDWARE_1_ERROR         = 0x1001;     // velodyne_packets_1 no data or out of time limit!
+  PERCEPTION_LIDAR_HARDWARE_2_ERROR         = 0x1002;     // velodyne_packets_2 no data or out of time limit!
+  PERCEPTION_LIDAR_HARDWARE_3_ERROR         = 0x1003;     // velodyne_packets_3 no data or out of time limit!
+
+  PERCEPTION_LIDAR_SOFTWARE_0_ERROR         = 0x1010;     // lidar_points_0 no data or out of time limit!
+  PERCEPTION_LIDAR_SOFTWARE_1_ERROR         = 0x1011;     // lidar_points_1 no data or out of time limit!
+  PERCEPTION_LIDAR_SOFTWARE_2_ERROR         = 0x1012;     // lidar_points_2 no data or out of time limit!
+  PERCEPTION_LIDAR_SOFTWARE_3_ERROR         = 0x1013;     // lidar_points_3 no data or out of time limit!
+
+  PERCEPTION_ARS_0_SOFTWARE_0_ERROR         = 0x1020;     // ars_0 no data or out of time limit!
+  PERCEPTION_ARS_1_SOFTWARE_1_ERROR         = 0x1021;     // ars_1 no data or out of time limit!
+
+  PERCEPTION_VISION_HARDWARE_0_ERROR        = 0x1100;     // 06mm camera no data or out of time limit!
+  PERCEPTION_VISION_HARDWARE_1_ERROR        = 0x1101;     // 25mm camera no data or out of time limit!
+  PERCEPTION_VISION_HARDWARE_2_ERROR        = 0x1102;     // camera for parallel driving no data!
+
+  PERCEPTION_VISION_SOFTWARE_0_ERROR        = 0x1110;     // vision process no data or out of time limit!
+
+  PERCEPTION_ULTRASONIC_HARDWARE_0_ERROR    = 0x1200;     // ultrasonicraw(id 0) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_1_ERROR    = 0x1201;     // ultrasonicraw(id 1) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_2_ERROR    = 0x1202;     // ultrasonicraw(id 2) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_3_ERROR    = 0x1203;     // ultrasonicraw(id 3) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_4_ERROR    = 0x1204;     // ultrasonicraw(id 4) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_5_ERROR    = 0x1205;     // ultrasonicraw(id 5) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_6_ERROR    = 0x1206;     // ultrasonicraw(id 6) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_7_ERROR    = 0x1207;     // ultrasonicraw(id 7) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_8_ERROR    = 0x1208;     // ultrasonicraw(id 8) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_9_ERROR    = 0x1209;     // ultrasonicraw(id 9) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_10_ERROR   = 0x120a;     // ultrasonicraw(id 10) no data!
+  PERCEPTION_ULTRASONIC_HARDWARE_11_ERROR   = 0x120b;     // ultrasonicraw(id 11) no data!
+
+  PERCEPTION_ULTRASONIC_SOFTWARE_0_ERROR    = 0x1310;     // ultrasonic out of range!
+
+  PERCEPTION_RADAR_HARDWARE_0_ERROR         = 0x1400;     // radar0(forward) no data!
+  PERCEPTION_RADAR_HARDWARE_1_ERROR         = 0x1401;     // radar1(backward) no data!
+
+  PERCEPTION_RADAR_SOFTWARE_0_ERROR         = 0x1410;     // lidarprocess no data or out of time limit!
+
+  PERCEPTION_MOBILEYE_HARDWARE_0_ERROR      = 0x1500;     // mobileye no data!
+
+  PERCEPTION_MOBILEYE_SOFTWARE_0_ERROR      = 0x1501;     // meprocess no data or out of time limit!
+
+  PERCEPTION_OBJECTFUSION_0_ERROR           = 0x1600;     // objecfusion no data or out of time limit!
+
+  /*--------------------------Missionplan module error codes start from here--------------------------------*/
+  PLANNING_MISSIONPLAN_SOFTWARE_0_ERROR     = 0x2000;       // routeplan no data or out of time limit!
+  PLANNING_MISSIONPLAN_SOFTWARE_1_ERROR     = 0x2001;       // statuspredict out of range!
+
+  /*--------------------------Behaviorplan module error codes start from here-------------------------------*/
+  PLANNING_BEHAVIORPLAN_SOFTWARE_0_ERROR    = 0x2100;       // behaviorplan out of range!
+  //----------------------------------------------------------------------------------------------------------
+
+
+  /*--------------------------Pathplan module error codes start from here-----------------------------------*/
+  PLANNING_PATHPLAN_SOFTWARE_0_ERROR        = 0x2200;       // pathplan no data or out of time limit!
+
+  /*--------------------------Speedplan module error codes start from here----------------------------------*/
+  PLANNING_SPEEDPLAN_SOFTWARE_0_ERROR       = 0x2300;      // speedplan no data or out of time limit!
+  /*--------------------------Prediction module error codes start from here----------------------------------*/
+  PREDICTION_ERROR                          = 0x2400;      // prediction error 
+
+  /*--------------------------Pcican module error codes start from here-------------------------------------*/
+  PCICAN_HARDWARE_0_ERROR                   = 0x3000;      // canbus no data!
+
+  PCICAN_SOFTWARE_0_ERROR                   = 0x3010;      // pcican output no data or out of limit time!
+
+  /*--------------------------loncontrol module error codes start from here---------------------------------*/
+  CONTROL_LON_SOFTWARE_0_ERROR              = 0x4010;     // loncontrol no data or out of limit time!
+
+  CONTROL_LAT_SOFTWARE_0_ERROR              = 0x4110;     // latcontrol no data or out of limit time!
+
+  /*--------------------------Monitor module error codes start from here------------------------------------*/
+  MONITOR_APP_CPU_HGIH_ERROR                = 0x5000;        // cpu of nodes high!
+  MONITOR_CLOUDSERVICE_CPU_HGIH_ERROR       = 0x5001;
+  MONITOR_OBJECTFUSION_CPU_HGIH_ERROR       = 0x5002;
+  MONITOR_LOCFUSION_CPU_HGIH_ERROR          = 0x5003;
+  MONITOR_PLAN_CPU_HGIH_ERROR               = 0x5004;
+  MONITOR_CONTROL_CPU_HGIH_ERROR            = 0x5005;
+  MONITOR_PCICAN_CPU_HGIH_ERROR             = 0x5006;
+    
+  MONITOR_APP_MEM_HGIH_ERROR                = 0x5100;        // mem of nodes high!
+  MONITOR_CLOUDSERVICE_MEM_HGIH_ERROR       = 0x5101;
+  MONITOR_OBJECTFUSION_MEM_HGIH_ERROR       = 0x5102;
+  MONITOR_LOCFUSION_MEM_HGIH_ERROR          = 0x5103;
+  MONITOR_PLAN_MEM_HGIH_ERROR               = 0x5104;
+  MONITOR_CONTROL_MEM_HGIH_ERROR            = 0x5105;
+  MONITOR_PCICAN_MEM_HGIH_ERROR             = 0x5106;
+    
+  MONITOR_APP_TIME_0_ERROR                  = 0x5200;        // time of node_comp error!
+  MONITOR_CLOUDSERVICE_TIME_0_ERROR         = 0x5201;
+  MONITOR_OBJECTFUSION_TIME_0_ERROR         = 0x5202;
+  MONITOR_LOCFUSION_TIME_0_ERROR            = 0x5203;
+  MONITOR_PLAN_TIME_0_ERROR                 = 0x5204;
+  MONITOR_CONTROL_TIME_0_ERROR              = 0x5205;
+  MONITOR_PCICAN_TIME_0_ERROR               = 0x5206;
+    
+  MONITOR_APP_TIME_1_ERROR                  = 0x5250;        // time of node_recv error!
+  MONITOR_CLOUDSERVICE_TIME_1_ERROR         = 0x5251;
+  MONITOR_OBJECTFUSION_TIME_1_ERROR         = 0x5252;
+  MONITOR_LOCFUSION_TIME_1_ERROR            = 0x5253;
+  MONITOR_PLAN_TIME_1_ERROR                 = 0x5254;
+  MONITOR_CONTROL_TIME_1_ERROR              = 0x5255;
+  MONITOR_PCICAN_TIME_1_ERROR               = 0x5256;
+    
+  MONITOR_APP_NODE_LOST_ERROR               = 0x5300;        // cpu of nodes high!
+  MONITOR_CLOUDSERVICE_NODE_LOST_ERROR      = 0x5301;
+  MONITOR_OBJECTFUSION_NODE_LOST_ERROR      = 0x5302;
+  MONITOR_LOCFUSION_NODE_LOST_ERROR         = 0x5303;
+  MONITOR_PLAN_NODE_LOST_ERROR              = 0x5304;
+  MONITOR_CONTROL_NODE_LOST_ERROR           = 0x5305;
+  MONITOR_PCICAN_NODE_LOST_ERROR            = 0x5306;
+    
+  MONITOR_SOFTWARE_0_ERROR                  = 0x5400;        // out of range!
+
+  /*--------------------------Vehicle Hardware error codes start from here----------------------------------*/
+  VEHICLE_EPS_0_ERROR                       = 0x6000;              
+  VEHICLE_EPS_1_ERROR                       = 0x6001;
+      
+  VEHICLE_BRAKE_0_ERROR                     = 0x6010;
+  VEHICLE_BRAKE_1_ERROR                     = 0x6011;
+      
+  VEHICLE_DRIVE_0_ERROR                     = 0x6020;
+      
+  VEHICLE_EPB_0_ERROR                       = 0x6030;
+  VEHICLE_EPB_1_ERROR                       = 0x6031;
+      
+  VEHICLE_POWER_0_ERROR                     = 0x6040;
+  VEHICLE_POWER_1_ERROR                     = 0x6041;           
+  VEHICLE_POWER_2_ERROR                     = 0x6042;
+  VEHICLE_POWER_3_ERROR                     = 0x6043;
+        
+  VEHICLE_CPU_0_ERROR                       = 0x6050;
+  VEHICLE_VCU_1_ERROR                       = 0x6051;
+}
+
+message StatusPb {
+  optional ErrorCode error_code   = 1 [default = OK];
+  optional string msg             = 2;
+}
+
+message FaultInfo {
+  optional double timestamp_sec   = 1;
+  optional string  module_name    = 2;
+  optional string   version       = 3;
+  optional ErrorCode error_code   = 4 [default = OK];
+  optional int32 fault_level      = 5;
+  optional string msg             = 6;
+  optional int32   fault_type     = 7;
+}

@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package Control.proto;
+
+message TimeStatus {
+	double dtime                    = 1;
+	string source_node_name         = 2;
+	string destination_node_name    = 3;
+}
+
+message TimeStatistics {
+	 repeated TimeStatus dev_time_status_msg  = 1;
+     double sending_timestamp                 = 2;
+}
+
+message FaultInfo {
+	 double timestamp_sec                = 1;
+	 string module_name                  = 2;
+	 string version                      = 3;
+	 int32 	error_code                   = 4;
+	 string msg                          = 5;
+	 int32  fault_level                  = 6;
+	 int32 	fault_type                   = 7;
+}
+
+message FaultVec {
+	 repeated FaultInfo info_vec        = 1;
+     int32 	module_fault_level          = 2;
+}
+
+message Header {
+	 int32  sequence_num                 = 1;
+     double time_stamp                   = 2;
+	 string module_name                  = 3;
+	 string version                      = 4;
+	 FaultVec fault_vec                  = 5;
+	 TimeStatistics time_statistics      = 6;
+}
+
+message VehicleInfo {
+	 float steerangle                   = 1;
+	 float speed                        = 2;
+	 float vehicle_accel                = 3;
+	 float brake_pressure               = 4;
+	 int32 shift_position               = 5; // PARKING = 0, REVERSE = 1, DRIVER = 3, NEUTRAL = 2
+	 int32 epb_status                   = 6; // 1-break 0-release
+	 int32 current_drive_mode           = 7; // 0-manual 1-automode 2-remotemode
+	 int32 sys_state                    = 8; // 0-manual 5-automode 7-emergencybrakepressed
+	 int32 on_accpedal                  = 9; // >=1 means driver takeover acc pedal
+	 int32 brake_state                  = 10; // >=1 means driver takeover brake pedal
+}
+
+message ControlFeedback {
+	 Header header                      = 1;
+	 VehicleInfo vehicle_info           = 2;
+	 	//int32 brake_state                  = ;  // move into vhicle_info
+}
+
+
+//message BussinessDemand {
+//	 bool isvalid                       = 1;
+//     int32 cmd                          = 2;
+//}
+
+message Latcontrol {
+	 float targetangle                  = 1; 
+	 int32  targettorque                = 2;
+}
+
+message Loncontrol {
+	 float targettorque                 = 1;
+	 float targetpressure               = 2;
+	 float pitch                        = 3;
+	 float targetspeed                  = 4;
+	 float targetaccelation             = 5;
+	 int32 actuatormode                 = 6; //0-BRAKING   1-DRIVERING
+	 int32 shiftposition                = 7; // PARKING = 0, REVERSE = 1, DRIVER = 3, NEUTRAL = 2
+	 bool epbflag                       = 8;
+	 bool brakelight                    = 9;
+	 bool reverselight                  = 10;
+	 int32 emergency_obstacle           = 11;
+	 bool slop_status                   = 12;
+}
+
+//控制模块输出
+message SystemControl {
+	 Header header                      = 1;
+	 Latcontrol latcontrol              = 2;
+	 Loncontrol loncontrol              = 3;
+}
+
+
+
+

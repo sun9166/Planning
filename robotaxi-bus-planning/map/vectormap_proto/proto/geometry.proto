@@ -1,0 +1,140 @@
+syntax = "proto2";
+
+package acu.common;
+
+
+message PointENU {
+  optional double x = 1 [default = nan];  // East from the origin, in meters.
+  optional double y = 2 [default = nan];  // North from the origin, in meters.
+  optional double z = 3 [default = 0.0];  // Up from the WGS-84 ellipsoid, in
+                                          // meters.
+}
+
+
+
+message Point2D {
+  optional double x = 1 [default = nan];
+  optional double y = 2 [default = nan];
+}
+
+
+message Point3D {
+  optional double x = 1 [default = nan];
+  optional double y = 2 [default = nan];
+  optional double z = 3 [default = nan];
+}
+
+
+
+//for predict
+message UnsureVar{
+  optional double variable = 1;
+  optional double var_std = 2;
+}
+
+message UnsurePoints{
+  optional UnsureVar x = 1;//vcs
+  optional UnsureVar y = 2;//vcs
+  optional UnsureVar heading = 3;// predict heading
+  optional double rho = 4;
+}
+
+message UnsurePosition{
+  optional int32 parking_id = 1;
+  optional UnsurePoints point = 2;
+}
+
+
+//localization
+
+message Vector3{
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3; 
+}
+
+message Quaternion{
+    optional double x = 1;
+    optional double y = 2;
+    optional double z = 3;
+    optional double w = 4; 
+}
+
+message Vector3WithCovariance{
+    optional UnsureVar x = 1;
+    optional UnsureVar y = 2;
+    optional UnsureVar z = 3;
+}
+
+message EulerWithCovariance{
+    optional UnsureVar roll = 1;
+    optional UnsureVar pitch = 2;
+    optional UnsureVar yaw = 3; 
+}
+
+message WheelSpeed{
+    optional UnsureVar front_left = 1;
+    optional UnsureVar front_right = 2;
+    optional UnsureVar rear_left = 3;
+    optional UnsureVar rear_right = 4;     
+}
+
+message PoseEuler{
+    optional Vector3WithCovariance position = 1;
+    optional EulerWithCovariance rotation = 2;    
+}
+
+message PoseQuaternion{
+    optional Vector3WithCovariance position = 1;
+    optional Quaternion quaternion = 2;
+    optional Vector3 rpy_covariance = 3;
+}
+
+message Twist{
+    optional Vector3WithCovariance velocity = 1;
+    optional Vector3WithCovariance angular_velocity = 2;
+}
+
+
+enum PoseStatus {
+        NORMAL = 0;
+        ERROR = 1;
+    };
+
+message Pose{
+    optional PoseEuler pose_euler = 1;
+    optional PoseQuaternion pose_quaternion = 2;
+    
+    optional PoseStatus status = 3;
+}
+
+message LLH{
+    optional UnsureVar lat = 1;
+    optional UnsureVar lon = 2;
+    optional UnsureVar height = 3;
+}
+
+
+enum GpsStatus {
+        NOFIX = 0;
+        SINGLE = 1;
+        PSRDIFF = 2;
+        CODE_DIFF = 3;
+        NARROW_INT = 4;
+        NARROW_FLOAT = 5;
+    };
+message NavStatus{
+  optional double utc_time = 1;
+    
+  optional GpsStatus gps_status = 2;
+  optional int32 pos_status = 3;
+  optional int32 att_status = 4;
+    optional int32 init_status = 5; 
+  optional int32 sate_num = 6;
+  optional float hdop = 7;
+  optional float pdop = 8;
+  optional float diff_age = 9;
+}
+
+
+

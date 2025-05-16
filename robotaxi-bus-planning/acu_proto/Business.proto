@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package business.proto;
+
+message Header {
+  double timestamp_sec = 1;
+  string module_name = 2;
+  uint32 sequence_num = 3;
+  string version = 4 ;
+}
+
+message LocPos {
+    double xg                       = 1;
+    double yg                       = 2;
+    double lat                      = 3;
+    double lon                      = 4;
+    float v                         = 5;
+    float height                    = 6;
+    float heading                   = 7;
+    int32 loc_fault_level           = 8;
+    int32 loc_status                = 9;
+    int32 gps_status                = 10;
+    float time_stamp              = 11;   // location stamp
+}
+
+message BusinessStatus {
+    Header header                   = 1;
+    int32 business_mode_st          = 2;    // 0-default,1-autodrive, 2-reserved for mapcollection,calibration,remotedrive...
+    int32 task_st                   = 3;    // 0-idle,1-init,2-ready,3-running,4-keeping,5-success,6-failed
+    int32 auto_ready_st             = 4;    // 0-not ready,1-ready
+    float task_total_mileage        = 5;
+    float task_remain_mileage       = 6;    
+    int32 cur_mission_id            = 7;    
+    float task_dist2nextstop        = 8;
+    LocPos locpos                   = 9;
+    int32	ad_mode_disp	=10;
+    int32	ad_sysstat_disp	=11;
+}
+
+message BusinessCmd {
+  int32 	brake_light             = 1;
+  int32 	tail_light              = 2;
+  int32 	double_flash_light      = 3;
+  int32 	low_beam                = 4;
+  int32 	high_beam               = 5;
+  int32 	auto_horn               = 6;
+  int32 	front_fog_light         = 7;
+  int32 	rear_fog_light          = 8;
+  int32 	wiper                   = 9;
+  int32 	doorlock                = 10;
+  int32 	turn_left_light         = 11;
+  int32 	turn_right_light        = 12;
+  int32	steer_ctrl_mode		= 13;
+  int32	accl_ctrl_mode		= 14;
+  int32	brak_ctrl_mode		= 15;
+  int32	ebp_ctrl_mode		= 16;
+  int32	bcm_ctrl_mode		= 17;
+  int32	recovery_brak_enable	= 18;
+  int32	ambient_light		= 19;
+  int32	roof_light			= 20;
+  int32	washer			= 21;
+}

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package v2c.proto;
+
+message PathPoint {
+  double	lat= 1;		// WGS-84, 如 39.211553
+  double	lon= 2;		// WGS-84，如 117.165651
+}
+
+message Vehicle2Cloud{
+  double timestamp              	=1;	//Unix时间，个位为秒，如12300000000.234567
+  string vehicle_id 		=2;	//Taxi001
+  int32  vehicle_status            	=3;	//0-manual,1-autodrive,2-remotedrive
+  int32  task_status		=4;	//0-idle,1-init,2-ready,3-running,4-keeping,5-success,6-failed
+  double task_total_mileage	=5;	//m,  13045.23
+  double task_remain_mileage	=6;	//m,  256.23
+  double vehicle_loc_lat	=7;	//WGS-84, 如 39.211553
+  double vehicle_loc_lon	=8;	//WGS-84，如 117.165651
+  repeated PathPoint global_path	=9; 	// {39.211556,117.165621}
+  float vehicle_speed			=10;	//km/h   35.5
+  repeated int32 system_fault_code	=11;	// {0x2403}
+  int32 turnning_light		=12;	// 0-none,1-left turn,2-right turn,3-double flash
+}
+

@@ -1,0 +1,171 @@
+syntax = "proto3";
+
+package common_msgs;
+
+message TimeStatus {
+  double dtime                    = 1;
+  string source_node_name         = 2;
+  string destination_node_name    = 3;
+}
+
+message TimeStatistics {
+  repeated TimeStatus dev_time_status_msg  = 1;
+  double sending_timestamp                 = 2;
+}
+
+message FaultInfo {
+  double timestamp_sec                = 1;
+  string module_name                  = 2;
+  string version                      = 3;
+  int32   error_code                  = 4;
+  string msg                          = 5;
+  int32  fault_level                  = 6;
+  int32   fault_type                  = 7;
+}
+
+message FaultVec {
+  repeated FaultInfo   info_vec       = 1;
+  int32  module_fault_level           = 2;
+}
+
+message Header {
+  int32  sequence_num                 = 1;
+  double time_stamp                   = 2;
+  string module_name                  = 3;
+  string version                      = 4;
+  FaultVec fault_vec                  = 5;
+  TimeStatistics time_statistics      = 6;
+}
+
+message AvosClock {
+	int32 day     = 1;
+	int32 hour    = 2;
+	int32 minute  = 3;
+	int32 second  = 4;
+}
+message AvosTime {
+	bool time_enable          = 1;
+	int32 relative_time       = 2;
+	AvosClock absolute_time   = 3;
+}
+
+
+message UnsureVar {
+	double 	variable = 1;
+	double 	var_std  = 2;
+}
+
+message Vector3WithCovariance {
+	UnsureVar 	x = 1;
+	UnsureVar 	y = 2;
+	UnsureVar 	z = 3;
+	
+}
+
+message Quaternion {
+	double 	x = 1;
+	double 	y = 2;
+	double 	z = 3;
+	double 	w = 4;
+}
+
+message Vector3 {
+	double 	x = 1;
+	double 	y = 2;
+	double 	z = 3;
+}
+
+
+message UnsurePoint {
+	UnsureVar 	x        = 1;
+	UnsureVar 	y        = 2;
+	UnsureVar 	heading  = 3;
+	double 	 rho     = 4;
+}
+
+message UnsurePosition {
+	int32 	parking_id    = 1;
+	UnsurePoint 	point = 2;
+}
+
+message EulerWithCovariance {
+	UnsureVar 	roll   = 1;
+	UnsureVar 	pitch  = 2;
+	UnsureVar 	yaw    = 3;
+}
+
+message PoseEuler {
+	Vector3WithCovariance 	position = 1;
+	EulerWithCovariance 	rotation = 2;	 
+}
+
+message DRPoseWithTime {
+	int32      week   = 1;
+  double    utctime = 2;
+  double    dr_time = 3;
+  PoseEuler  pose_euler = 4;
+}
+
+message Twist {
+	Vector3WithCovariance 	velocity = 1;
+  Vector3WithCovariance 	angular_velocity = 2;
+}
+
+message LLH {
+	UnsureVar 	lat    = 1;
+	UnsureVar 	lon    = 2;
+	UnsureVar 	height = 3;	
+}
+message NavStatus {
+	double 	utc_time    = 1;
+	int32 	gps_status  = 2; //# 0-nofix  1-single  2-psrdiff  3-code_diff  4-narrow_init  5-narrow_float
+	int32 	pos_status  = 3;
+	int32  	att_status  = 4;
+	int32  	init_status = 5;
+	int32  	sate_num    = 6;
+	float  	hdop        = 7;
+	float  	pdop        = 8;
+	float  	diff_age    = 9;
+  //# int32   recover_data #bit0:fushing sucessful fixd write 1	
+}
+message Point2D {
+	double 	x  = 1;
+	double 	y  = 2;
+}
+message Point3D {
+	double 	x = 1; 
+	double 	y = 2;
+	double 	z = 3;
+}
+message PointENU {
+	double 	x = 1; 
+	double 	y = 2;
+	double 	z = 3;
+}
+
+message PoseQuaternion {
+	Vector3WithCovariance position  = 1;
+	Quaternion 	quaternion          = 2;
+	Vector3  rpy_covariance	        = 3;
+}
+
+message Pose {
+	PoseEuler  	pose_euler          = 1; 
+	PoseQuaternion 	pose_quaternion = 2;
+	int32  	status                  = 3; //# 0-normal  1-error
+	
+}
+
+
+
+message WheelSpeed {
+	UnsurePoint 	front_left  = 1;
+	UnsurePoint 	front_right = 2;
+	UnsurePoint 	rear_left   = 3;
+	UnsurePoint 	rear_right  = 4;
+}
+
+
+
+
+

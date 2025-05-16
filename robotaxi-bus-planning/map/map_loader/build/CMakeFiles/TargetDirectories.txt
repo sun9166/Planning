@@ -1,0 +1,3 @@
+/host/common_package/map/map_loader/build/CMakeFiles/map_loader_lib.dir
+/host/common_package/map/map_loader/build/CMakeFiles/edit_cache.dir
+/host/common_package/map/map_loader/build/CMakeFiles/rebuild_cache.dir

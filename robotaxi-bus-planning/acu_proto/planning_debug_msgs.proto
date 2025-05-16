@@ -1,0 +1,414 @@
+syntax = "proto3";
+
+package planning_debug_msgs;
+
+import "common_msgs.proto";
+import "planning_msgs.proto";
+import "perception_objects_msgs.proto";
+
+message DebugState {
+	int32 value = 1;
+	string str  = 2;
+}
+
+message SLPoint {
+	double s = 1;
+	double l = 2;
+}
+
+message SpeedPoint {
+	double t  = 1;
+	double s  = 2;
+	double v  = 3;
+	double a  = 4;
+	double da = 5;
+}
+
+message DebugMotionPlan {
+	double time_stamp                               = 1;
+	double v                                        = 2; //规划第一个点的速度，最新定位对应的点
+	double kappa                                    = 3; //规划第一个点的曲率，最新定位对应的点
+	double a                                        = 4; //规划第一个点的加速度，最新定位对应的点
+	double ego_speed                                = 5;
+	double cruise_speed_max                         = 6;
+	int32 following_object_id                       = 7;
+	double following_object_v                       = 8;
+	double following_object_dis                     = 9;
+	double following_object_a                       = 10;
+	double following_object_min_s                   = 11;
+	double following_object_min_t                   = 12;
+	double following_object_target_dis              = 13;
+	int32 is_new_path                               = 14;
+	double init_point_s                             = 15;
+	double init_point_l 							= 16;
+	double init_point_dl                            = 17;
+	double init_point_ddl                           = 18;
+	double locpos_s                                 = 19;
+	int32 is_fallback_trajectory                    = 20;
+	string path_fallback_reason                     = 21;
+	string speed_fallback_reason                    = 22;
+	int32 trajectory_type                           = 23;
+	bool is_replan                                  = 24;
+	int32 replan_reason                             = 25;
+	string generate_stop_trajectory_reason          = 26;
+	int32 yield_object_id                           = 27;
+	double yield_object_v                           = 28;
+	double yield_object_current_s                   = 29;
+	double yield_object_collision_min_s             = 30;
+	double yield_object_collision_min_t             = 31;
+	repeated SLPoint path_data                      = 32;
+	repeated SpeedPoint speed_data                  = 33;
+	int32 reference_line_smoothed_status            = 34;
+	int32 min_kappa_index                           = 35;
+	int32 max_kappa_index                           = 36;
+	float kappa_min                                 = 37;
+	float kappa_max                                 = 38;
+	float total_time                                = 39;
+	float pathplan_total_time                       = 40;
+	float speedplan_total_time                      = 41;
+	repeated string speedplan_task                  = 42;
+	repeated float speedplan_time                   = 43;
+	repeated float speed_upper_constraint           = 44;
+	repeated float speed_lower_constraint           = 45;
+	repeated float s_upper_constraint               = 46;
+	repeated float s_lower_constraint               = 47;
+	float behavior_parser_time_spend                = 48;
+	float behavior_parser_Reset_t                   = 49;
+	float behavior_parser_FindTargetRefLine_t       = 50;
+	int32 borrow_time_count                         = 51;
+	float behavior_parser_CreateReferenceLineData_t = 52;
+	int32  plan_in_lane_                            = 53;
+	float frame_time_spend                          = 54;
+	float trajectory_stitcher_time_spend            = 55;
+	float generate_trajectory_time_spend            = 56;
+	int32 passby_limit_flag                         = 57;
+	float passby_limit_s                            = 58;
+	float passby_limit_v                            = 59;
+	float yield_weight_factor                       = 60;
+	float cruise_weight_factor                      = 61;
+	float follow_weight_factor                      = 62;
+	int32 borrow_lane_type                          = 63;
+	int32 box_planning_state                        = 64;
+	float jerk_weight_factor                        = 65;
+	float follow_v_weight_factor                    = 66;
+	int32 acc_dcc_mode                              = 67;
+	float follow_dis_error                          = 68;
+	int32 real_time_ob_avoid_state                  = 69;
+	int32 no_real_time_cnt                          = 70;
+	float cog_linear_velocity                       = 71;
+	float dis_to_virtual_wall                       = 72;
+	int32 sentence_action                           = 73;
+}
+message STpair {
+	float t     = 1;
+    float min_s = 2;
+	float max_s = 3;
+}
+
+message DebugPdObject {
+	repeated string lane_ids    = 1;
+	bool right_of_way           = 2;
+	int32 conflict_type         = 3;
+	repeated STpair st          = 4;
+	repeated float range_a    = 5;
+	repeated float range_pd_s = 6;
+}
+
+message DebugObject {
+	int32 id                       = 1;
+	int32 cell_num                 = 2;
+	float acc                      = 3;
+	float speed                    = 4;
+	string lane_id                 = 5;
+	bool is_static                 = 6;
+	bool was_dynamic               = 7;
+	bool need_focus                = 8;
+	bool key_focus                 = 9;
+	bool is_reverse_traveling      = 10;
+	float dis_to_junction          = 11;
+	float s_l_min_s                = 12;
+	float s_l_max_s                = 13;
+	float s_l_min_l                = 14;
+	float s_l_max_l                = 15;
+	double nearest_xg              = 16;
+	double nearest_yg              = 17;
+	repeated DebugPdObject pd_objs = 18;
+}
+
+message DebugGap {
+	int32 start_id  		 = 1;
+ 	int32 end_id             = 2;
+	float aim_min_s          = 3;
+	float aim_max_s          = 4;
+	float allow_min_v        = 5;
+	float allow_max_v        = 6;
+	float allow_min_t        = 7;
+	uint32 feasibility_level = 8; 	//# 0-bad 1-good 2-great
+	uint32 safety_level      = 9;	//# 0-bad 1-good 2-great
+}
+
+message DebugLine {
+	repeated string lane_ids         = 1;
+	float speed_limit                = 2;
+	float dis2line                   = 3;
+	float distance_to_mission_point  = 4;
+	DebugState block_state           = 5;
+	DebugState slow_state            = 6;
+	int32 global_cost                = 7;
+	float speed_cost                 = 8;
+	float long_term_speed            = 9;
+	float short_term_speed           = 10;
+	repeated DebugObject objs        = 11;
+	bool line_queue                  = 12;
+	bool is_congestion               = 13;
+	repeated DebugGap gaps           = 14;
+}
+
+message DebugLight {
+	repeated string lane_ids = 1;
+	int32 jc_light_state     = 2;
+	bool response_area_light = 3;
+	int32 unkey_color        = 4;
+	int32 area_color         = 5;
+	string light_id          = 6;
+}
+
+message DebugCognition {
+	double time_stamp                      = 1;
+	repeated string reference_lane_ids     = 2;
+	repeated string reference_target_ids   = 3;
+	uint32 mapengine_index                 = 4;
+	uint32 correction_index                = 5;
+	uint32 target_index                    = 6;
+	repeated uint32 key_line_id            = 7;		 // current_line_id and target_line_id
+	bool in_current                        = 8;
+	bool in_target                         = 9;
+	float map_delta_time                   = 10;
+	float imu_delta_time                   = 11;
+	repeated DebugLine current_line        = 12;
+	repeated DebugLine left_line           = 13;
+	repeated DebugLine right_line          = 14;
+	repeated DebugLine local_line          = 15;
+	DebugLight light_info                  = 16;
+	uint32 drive_state                     = 17;
+	float time_cost_ms                     = 18;	
+}
+
+message DecisionPoint {
+	int32 t  = 1;
+	int32 s  = 2;
+}
+
+message STGraph {
+	int32 id                = 1;
+	int32 cell_num          = 2;
+	string lane_id          = 3;
+	bool is_static          = 4;
+	bool was_dynamic        = 5;
+	bool right_of_way       = 6;
+	int32 conflict_type     = 7;
+	float s_l_min_s         = 8;
+	float s_l_max_s         = 9;
+	float s_l_min_l         = 10;
+	float s_l_max_l         = 11;
+	float t_1               = 12;
+	float min_s_1           = 13;
+	float max_s_1           = 14;
+	float t_2               = 15;
+	float min_s_2           = 16;
+	float max_s_2           = 17;
+	repeated float st_t     = 18;
+	repeated float st_min_s = 19;
+	repeated float st_max_s = 20;
+	float speed             = 21;
+	repeated float t        = 22;
+	repeated float min_s    = 23;
+	repeated float max_s    = 24;
+}
+
+message DebugSTGraph {
+	repeated STGraph cognition_objects     = 1;
+	repeated DecisionPoint decision_points = 2;
+	repeated STGraph original_objects      = 3;
+}
+
+message Sentence {
+	string action          = 1;
+	uint32 direction       = 2;
+	float dis_to_end       = 3;
+	float dis_to_boundary  = 4;
+	float xg               = 5;
+	float yg               = 6;
+	float heading          = 7;
+}
+
+message DebugDecision {
+	double time_stamp                   = 1;
+	uint32 target_line                  = 2;
+	int32 giveway_id                    = 3;
+	float speed_limit                   = 4;
+	repeated float boundary_s           = 5;
+	repeated float left_boundary        = 6;
+	repeated float right_boundary       = 7;
+	repeated int32 object_id            = 8;
+	repeated int32 object_decision      = 9;
+	repeated Sentence sentences         = 10;
+	DebugSTGraph st_graph               = 11;
+	string cmd_feedback                 = 12;
+	uint32 lc_status                    = 13;
+	int32 decision_result               = 14;
+	uint32 scenario_type                = 15;
+	uint32 intention_type               = 16;
+	uint32 option_type                  = 17;
+	uint32 turning_type                 = 18;
+	uint32 stop_type                    = 19;
+	uint32 lateral_decision             = 20;
+	uint32 ready_status                 = 21;
+	float dis_to_junction               = 22;
+	float dis_to_stop                   = 23;
+	float light_s                       = 24;
+	float light_time                    = 25;
+	float left_time                     = 26;
+	uint32 light_color                  = 27;
+	uint32 turning                      = 28;
+	float expand_l                      = 29;
+	planning_msgs.Trajectory trajectory = 30;
+	int32 is_passable                   = 31;
+	repeated string passable_lane_ids   = 32;
+	repeated string black_road_ids      = 33;
+}
+
+message DebugPrediction {
+	repeated planning_msgs.Trajectory points = 1;
+}
+
+message DebugImu {
+	double time_stamp  = 1;
+	double xg          = 2;
+	double yg          = 3;
+	double yaw         = 4;
+}
+
+message PlanningDebug {
+	common_msgs.Header header               = 1;
+	string version                         = 2;
+	DebugState main_stream_msg             = 3;
+	DebugState task_fsm_condition          = 4;
+	DebugState task_fsm_state              = 5;
+	DebugState cognition_msg               = 6;
+	DebugState business_msg                = 7;
+	DebugState behavior_fsm_condition      = 8;
+	DebugState behavior_fsm_state          = 9;
+	DebugState pathplan_msg                = 10;
+	DebugState thread_state                = 11;
+	DebugMotionPlan motionplan             = 12;
+	DebugCognition cognition               = 13;
+	DebugDecision decision                 = 14;
+	DebugPrediction prediction             = 15;
+	DebugImu locpose                       = 16;
+	repeated Object perception             = 17;
+	float time_cost_ms                     = 18;
+}
+
+message DebugBusiness {
+	float dis_to_mission_point = 1;
+	float car_velocity         = 2;
+	int32 process_status         = 3;
+	int32 is_current_line_null   = 4;
+	int32 business_exucute_over  = 5;
+}
+
+message DebugSTPoint {
+	float p         = 1;
+	float s         = 2;
+	float t         = 3;
+	repeated int32 id = 4;
+}
+
+message Debugstmap {
+	repeated DebugSTPoint st_points = 1;
+	repeated DebugSTPoint decision_st_points   = 2;
+}
+
+message DebugObjectByLine {
+	//DebugObject[2] object_debug
+	repeated DebugObject object_debug = 1;
+	int32 object_decision             = 2;
+	float max_p                       = 3;
+	float limit_v                     = 4;
+}
+
+message LBounds {
+	double right_boundary            = 1;
+	double left_boundary             = 2;
+	double right_boundary_xg         = 3; //#cardesain coordinates
+	double right_boundary_yg         = 4;
+	double right_boundary_globalangle  = 5;
+	double right_boundary_x            = 6;
+	double right_boundary_y            = 7;
+	double right_boundary_angle        = 8;
+	double left_boundary_xg            = 9;//#cardesain coordinates
+	double left_boundary_yg            = 10;
+	double left_boundary_globalangle   = 11;
+	double left_boundary_x             = 12;
+	double left_boundary_y             = 13;
+	double left_boundary_angle        = 14;
+}
+
+message SoftBoundary {
+	LBounds l_bounds          = 1;//#soft_lmin, soft_lmax
+	double probability        = 2;
+	double obj_occupy_delt_l  = 3;
+	string obj_id             = 4;
+}
+
+message BoundaryType {
+	int32 right_bound_type = 1;
+	int32 left_bound_type  = 2;
+}
+
+message DebugSLBoundary {
+	double start_s =1;
+	double delta_s =2;
+	repeated LBounds boundary =3;
+	repeated LBounds box_modified_boundary =4;
+	repeated LBounds dynamic_obstacle_boundary =5;
+	repeated SoftBoundary soft_boundary  =6;
+	repeated BoundaryType boundary_type =7;
+	string label =8;
+	string blocking_obstacle_id =9;
+	bool is_blocked =10;
+}
+
+message motion_obstacle {
+	string Id                = 1;
+	int32 PerceptionId       = 2;
+	double Perception_xg     = 3;
+	double Perception_yg     = 4;
+	int32 IsStatic           = 5;
+	int32 IsVirtual          = 6;
+}
+
+message motion_obstacle_vec {
+	repeated motion_obstacle motion_obstacles =1;
+}
+
+message DebugXTBound {
+	float t          = 1;
+	float min_bound  = 2;
+	float max_bound  = 3;
+}
+
+message XTBounds {
+	repeated DebugXTBound st_bounds   = 1;
+	repeated DebugXTBound dst_bounds  = 2;
+	repeated DebugXTBound ddst_bounds = 3;
+}
+
+message DebugExtraDecision {
+	//visualization_msgs/MarkerArray reference_lines
+	//visualization_msgs/MarkerArray decison_bounds
+	//visualization_msgs/Marker dis_to_last_lc
+	repeated float dist_to_ends_xg =1;
+	repeated float dist_to_ends_yg =2;
+}

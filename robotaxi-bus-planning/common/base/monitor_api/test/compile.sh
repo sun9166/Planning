@@ -1,0 +1,1 @@
+g++ -o test_monitor_api test_monitor_api.cpp ../include/monitor_table_config.pb.cc ../../time/src/duration.cc  ../../time/src/node_time.cc ../../time/src/rate.cc  -I. -I ../../../../ -I../../time/include -I../../log/include/  `pkg-config --cflags --libs protobuf` -lglog --std=c++11

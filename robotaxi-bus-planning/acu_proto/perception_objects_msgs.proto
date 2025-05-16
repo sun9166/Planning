@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+import "common_msgs.proto";
+
+message ObstacleCell {
+  int32 idc = 1;  // ID
+  double x = 2;   // x坐标，单位：m
+  double y = 3;   // y坐标，单位：m
+  double xg = 4;  // 全局x坐标，单位：m
+  double yg = 5;  // 全局y坐标，单位：m
+}
+
+message Object {
+  uint32 id = 1;  // 障碍物ID
+  float x = 2;    // 相对距离x，VCS，单位：m
+  float y = 3;    // 相对距离y，VCS，单位：m
+  float z = 4;    // 相对距离z，VCS，单位：m
+  float vxrel = 5;  // 相对速度x，VCS，单位：m/s
+  float vyrel = 6;  // 相对速度y，VCS，单位：m/s
+  double xabs = 7;  // 绝对距离x，VCS，单位：m
+  double yabs = 8;  // 绝对距离y，VCS，单位：m
+  float vxabs = 9;  // 绝对速度x，VCS，单位：m/s
+  float vyabs = 10;  // 绝对速度y，VCS，单位：m/s
+  float width = 11;  // 单位：m
+  float length = 12;  // 单位：m
+  float height = 13;  // 单位：m
+  float speed = 14;  // 单位：m/s
+  float acceleration = 15;  // 单位：m/s2
+  float heading = 16;  // 单位：度
+  enum ObjectType {
+    CAR_TYPE = 0;
+    TRUCK_TYPE = 1;
+    PEDESTRIAN_TYPE = 2;
+    CYCLIST_TYPE = 3;
+    UNKNOWN_TYPE = 4;
+    UNKNOWN_MOVABLE_TYPE = 5;
+    UNKNOWN_UNMOVABLE_TYPE = 6;
+  }
+  ObjectType type = 17;  // 障碍物类型
+  uint32 source = 18;  // 数据来源
+  float confidence = 19;  // 置信度，范围：0.0~1.0
+  uint32 age = 20;  // 
+  enum IsUltraStatic {
+    INVALID = 0;
+    FALSE = 1;
+    TRUE = 2;
+  }
+  IsUltraStatic is_ultra_static = 21;  // 是否超静态
+  enum MovingStatus {
+    INVALID_STATUS = 0;
+    MOVING = 1;
+    STATIC = 2;
+    MOVABLE = 3;
+  }
+  MovingStatus moving_status = 22;  // 移动状态
+  repeated ObstacleCell cells = 23;  // 
+}
+
+message PerceptionObjects {
+  common_msgs.Header header = 1;  // 消息头
+  repeated Object objs = 2;  // 障碍物列表
+  repeated ObstacleCell cells = 3;  // 细胞列表
+}

@@ -1,0 +1,74 @@
+syntax = "proto3";
+package vehicle_info.proto_msg;
+
+enum WheelDirection {
+    DIRECTION_UNKNOWN = 0;
+    DIRECTION_FORWARD = 1;
+    DIRECTION_BACKWARD = 2;
+}
+
+enum CurrentGear {
+    UNKNOWN_GEAR = 0;
+    FORWARD_GEAR = 1;
+    REVERSE_GEAR = 2;
+    NEUTRAL_GEAR = 3;
+}
+
+enum FrontFogLampStatus {
+    STATUS_UNKNOWN = 0;
+    STATUS_NORMAL = 1;
+    STATUS_DAMAGE = 2;
+}
+
+// ---------------------------------------------- Message Header --------------------------------------- //
+message MsgHeader {
+    double msgTimestamps = 1;
+    uint32 msgVersion = 2;
+    uint32 msgFrameId = 3;
+    uint32 msgTotalCnt = 4;
+    uint32 msgLocalCnt = 5;
+    uint32 msgLocalLen = 6;
+}
+
+message ControlCommand {
+    float AccRq = 1;   //加减速度请求,unit:m/s^2
+    float SteerAngleRq = 2;//方向盘转角请求,deg
+    float SteerAngleSpdRq = 3;//方向盘转速请求,deg/s
+    uint32 LightLeftRq = 4;//左转向灯请求。0无效,1开灯,2关灯
+    uint32 LightRightRq = 5;//右转向灯请求。0无效,1开灯,2关灯
+}
+// ================= vehicle info =============== //
+message VehicleInfo {
+    MsgHeader msgheader = 1;
+    double VehSpd = 2; //车速，unit:km/h
+    WheelDirection FLWheelDriveDirection = 3;
+    WheelDirection FRWheelDriveDirection = 4;
+    WheelDirection RLWheelDriveDirection = 5;
+    WheelDirection RRWheelDriveDirection = 6;
+    CurrentGear Current_Gear = 7;
+    int32 LTurnLmpSts_R_Pbox = 8;  //左转向灯状态,0：关闭。1：开启。
+    int32 RTurnLmpSts_R_Pbox = 9;  //右转向灯状态,0：关闭。1：开启。
+    int32 FFogLmpSts_F_Pbox = 10;  //雾灯状态,0：关闭。1：开启。
+    int32 FrntWiprSwtSts = 11;
+    int32 WindshldWipreActvSts = 12;  //雨刮状态,0：关闭。1：慢速档开启。2：中速档开启。4：快速档开启。
+    int32 wipr_req = 13;
+    int32 ABSActv = 14;
+    int32 ABSFailSts = 15;
+    int32 VDCActv = 16;
+    float VehYawRate = 17; //车辆横摆角速度，左正右负（自车往左转为正），unit:deg/s
+    float VehLatAccel = 18;    //车辆RFU坐标系，加速度Right, unit:m/s^2,来源惯导
+    float VehLongAcc = 19;     //车辆RFU坐标系，加速度Front, unit:m/s^2,来源惯导
+    double Steering_Angle = 20;//方向盘转角，左正右负, unit:deg
+    int32 AutoLmpSwtSt = 21;
+    int32 HiBeamSwtSts = 22;   //远光灯状态,0：关闭。1：开启。
+    int32 LowBeamSwtSt = 23;   //近光灯状态,0：关闭。1：开启。
+    FrontFogLampStatus FrntFogLamSwtSt = 24;
+
+    float ActSteerAngleSpd = 25;//方向盘转速， unit:deg/s
+    float ActAcc = 26;//车辆加减速度， unit:m/s^2,来源底盘
+    float BrkPedal = 27;//制动踏板开度 [0-100]
+    float AccPedal = 28;//油门踏板开度 [0-100]
+    float Yaw = 29;//航向角, deg,正北为0°,顺时针旋转为[0,360°),unit:°
+    uint32 ActDrvMode = 30;//驾驶模式。0人工驾驶,1自动驾驶
+    ControlCommand ControlCmd = 31;//控制指令
+}

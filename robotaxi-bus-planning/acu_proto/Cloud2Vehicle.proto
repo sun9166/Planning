@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package c2v.proto;
+
+message PathPoint {
+  double	lat= 1;		// WGS-84, 如 39.211553
+  double	lon= 2;		// WGS-84，如 117.165651
+}
+
+message Mission {
+  int32 mission_id 	=1;	// 从1开始，每个加1
+  PathPoint point	=2;	
+  int32 mission_type	=3;	//1-需要停车，0-不需要停车
+}
+
+message Vehicle2Cloud{
+  double timestamp              	=1;		//Unix时间，个位为秒，如12300000000.234567
+  string vehicle_id 		=2;		//Taxi001
+  int32  cmd_sequence_num    	=3;		//从1开始，每次更新任务+1
+  int32  task_cmd		=4;		//0-default,1-init(no use),2-start task,3-stop task, 4-255其他任务（如开门锁、开空调等）
+  repeated Mission mission_points	=5;	//一组目标地点，至少包括1个起点（接客点），1个终点（目的地），若干途径点（可无），单个任务最大不超过10
+  repeated PathPoint forbidden_points	=6;	//地理围栏（禁止通行的路点），不超过5000个点
+
+}
+

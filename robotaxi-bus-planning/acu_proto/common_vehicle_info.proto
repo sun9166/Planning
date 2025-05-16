@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package vehicle.perception;
+
+
+message CommonVehicleInfo {
+  float vehiclespd = 1;  //m/s
+  float wheel_speed_fl = 2;   // always positive, use gear_location to calc +-,m/s
+  float wheel_speed_fr = 3;
+  float wheel_speed_rl = 4;
+  float wheel_speed_rr = 5;
+  int32 gear_location = 6;    // 0-P 1-R 2-N 3-D 4-ERROR_UNKNOWN
+  float steering_angle = 7;   // deg, left+ ,right-
+  float steering_angle_spd = 8;  // deg/sec , left+, right-
+  float longitudinal_accel = 9;  // m/s^2
+  float lateral_accel = 10;       // m/s^2
+  float yaw_rate = 11;    // deg/sec , right-hand rule, top positve
+  float pitch_rate = 12;     // deg/sec, right-hand rule, right positive
+  float roll_rate = 13;           // deg/sec, right-hand rule, front positive
+}

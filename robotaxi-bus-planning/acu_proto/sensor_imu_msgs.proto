@@ -1,0 +1,133 @@
+syntax = "proto3";
+
+package sensor_imu_msgs;
+import "common_msgs.proto";
+
+message LocalizationControl {
+	 bool is_lidar_open = 1;
+
+}
+message SensorImu{
+	common_msgs.Header header = 1;
+	common_msgs.LLH llh = 2;
+	common_msgs.Pose pose = 3;
+	common_msgs.Twist twist = 4;
+	common_msgs.Vector3 acceleration = 5;
+	common_msgs.UnsureVar v = 6;
+	common_msgs.NavStatus nav_status = 7;
+    common_msgs.DRPoseWithTime dr_pose_and_time = 8;
+	LocalizationControl localization_control = 9;
+}
+
+message Ivsensorgps {
+    common_msgs.Header header=1;
+    bool update=2;
+    double lon=3;
+    double lat=4;
+    double height=5;
+    double heading=6;
+    double velocity=7;
+    double up_velocity=8;
+    double track_angle=9;
+    int32 week=10;
+    double utctime=11;
+    double hdop=12;
+    double diff_age=13;
+    double base_length=14;
+    double heading_std=15;
+    double xg=16;
+    double yg=17;
+    double zg=18;
+    uint32 status=19;
+    uint32 satenum=20;
+    uint32 status_yaw=21;
+    uint32 is_heading_valid=22;
+}
+
+message Ivsensorimu {
+	common_msgs.Header header=1;
+	bool update=2;
+	uint32 time_tag=3;
+	int32 week=4;
+	double utc_time=5;
+	double gyro_x=6;
+	double gyro_y=7;
+	double gyro_z=8;
+	double acce_x=9;
+	double acce_y=10;
+	double acce_z=11;
+	double temperature=12;
+}
+
+message Ivwheelspeed {
+	common_msgs.Header header=1;
+	bool update=2;
+	int32 week=3;
+	double utc_time=4;
+	float wheelspeed_lr_pluse=5;
+	float wheelspeed_rr_pluse=6;
+	uint32 pluse_mask=7;
+}
+
+message Filterstatus {
+    bool update=1;
+    int32 frame_count=2;
+    float x_gyro_zero_bias=3;
+    float y_gyro_zero_bias=4;
+    float z_gyro_zero_bias=5;
+    float x_acce_zero_bias=6;
+    float y_acce_zero_bias=7;
+    float z_acce_zero_bias=8;
+     float heading_install_deviation=9;
+     float scale_factor_error=10;
+     float pitch_install_deviation=11;
+     float eastward_position_deviation=12;
+     float northward_position_deviation=13;
+     float sky_position_deviation=14;
+     float heading_deviation=15;
+     int32 gnss_eastward_position_count=16;
+     int32 gnss_northward_position_count=17;
+     int32 gnss_sky_position_count=18;
+     int32 gnss_eastward_speed_count=19;
+     int32 gnss_northward_speed_count=20;
+     int32 gnss_sky_speed_count=21;
+     int32 gnss_heading_count=22;
+     int32 odom_eastward_speed_count=23;
+     int32 odom_northward_speed_count=24;
+     int32 odom_sky_speed_count=25;
+     int32 laser_eastward_position_count=26;
+     int32 laser_northward_position_count=27;
+     int32 laser_sky_position_count=28;
+     int32 laser_heading_count=29;
+     int32 time_consuming=30;
+     uint32 fusion_model=31;
+     uint32 status=32;
+}
+
+message Ivlidarmatching {
+    common_msgs.Header header = 1;
+    bool update = 2;
+    int32 week = 3;
+    double utctime = 4;
+    double roll = 5;
+    double pitch = 6;
+    double yaw = 7;
+    double lat = 8;
+    double lon = 9;
+    double height = 10;
+    double xg = 11;
+    double yg = 12;
+    uint32 fusion_type = 13;
+    int32 init_once = 14;
+    int32 is_degeneracy = 15;
+    uint32 is_localization_area = 16;
+    uint32 is_in_map = 17;
+    double  matching_score = 18;
+    double lat_std = 19;
+    double lon_std = 20;
+    double height_std = 21;
+    double yaw_std = 22;
+    string version = 23;
+    repeated float gmm_scores = 24;
+    repeated int32 gmm_offsets = 25;
+}

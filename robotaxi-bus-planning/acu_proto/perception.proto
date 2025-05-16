@@ -1,0 +1,735 @@
+syntax = "proto3";
+
+//../protoc-3.6.1-linux-x86_64 -Ipath_to_protobuf/include -I. --cpp_out=.
+// perception.proto
+import "google/protobuf/wrappers.proto";
+import "perception_types.proto";
+import "perception_sensor_info.proto";
+import "perception_vehicle.proto";
+import "perception_road.proto";
+import "perception_barricade.proto";
+import "perception_diagnose.proto";
+
+package calmcar.perception;
+
+message Header {
+  int64 frame_index = 1;
+  int64 timestamp = 2;
+  string perception_version = 3;
+
+  enum ProtobufVersion {
+    option allow_alias = true;
+
+    // commit hash from calmcar-communication
+    V_1_0_0 = 0;    // 0f20f69bb73624e7fa8fe76085bb57b242020df1
+    V_1_0_1 = 1;    // 74eaba013ba741b70a5f4baaa3a4305e9db95699
+    V_1_0_2 = 2;    // 6c43b6ed518e4b9daf4e2acf825e62250891d51b
+    V_1_0_3 = 3;    // 318af4cea9352b0c265efccf6286551bddb7bbb9
+    V_1_0_4 = 4;    // c591c92b2ee6ee9c0ef12ef8522029b1cc0db492
+    V_1_0_5 = 5;    // a60941db6361f1de925856dbc6da1572f4d7132f
+    V_1_0_6 = 6;    // 58d4f2ac9a1636ae577e4b10e408be5b713f21fe
+    V_1_0_7 = 7;    // 3e7b340a9de78f0cdbfc9e99653a5d11384cf22b
+    V_1_0_8 = 8;    // c52c81997d2054085ebd485d34492ddae00eb575
+    V_1_0_9 = 9;    // da69df39852dbeb3020da24e92e78ea649abba49
+    V_1_0_10 = 10;  // 2db162746e0cab5112ac337c6a122eda08c9ca67
+    V_1_0_11 = 11;  // 29bc04e2421bf3f3ceec704c34b7bce9a9a42444
+    V_1_0_12 = 12;  // d400ec90ac214c8e8a19d03548bf06f18d3b476e
+    V_1_0_13 = 13;  // 2fd3ccd0e24d720bcd9b5081c0c0e573e3b4799d
+    V_1_0_14 = 14;  // de4a9faf0729f7fa54f7e0078614d21b46e59cad
+    // Add TrafficLightSpot
+    V_1_0_15 = 15;  // b118b058aae9035c8e3c6554852a8015b40e2cac
+    // Add diagnose
+    V_1_0_16 = 16;  // 442f76ee0aa80f78c11fcac8e8b1382ee88078c1
+    // Add system diagnose
+    V_1_0_17 = 17;  // 4a07311fdc9a70f7c794882bac290c48cc7f9da5
+
+    CURRENT_VERSION = 17;
+  }
+  ProtobufVersion protobuf_version = 4;
+
+  // od
+  enum ObjectVersion {
+    option allow_alias = true;
+    OD_V_1_0 = 0;
+    OD_V_1_1 = 1;
+    OD_CURRENT_VERSION = 1;
+  }
+  ObjectVersion object_version = 5;
+
+  // tfl
+  enum TrafficLightStructVersion {
+    option allow_alias = true;
+    TFL_STRUCT_V_1_0 = 0;
+    TFL_STRUCT_V_1_1 = 1;
+    TFL_STRUCT_CURRENT_VERSION = 1;
+  }
+  TrafficLightStructVersion tfl_struct_version = 6;
+
+  enum TrafficLightSpotVersion {
+    option allow_alias = true;
+    TFL_SPOT_V_1_0 = 0;
+    TFL_SPOT_V_1_1 = 1;
+    TFL_SPOT_CURRENT_VERSION = 1;
+  }
+  TrafficLightSpotVersion tfl_spot_version = 7;
+
+  // tsr
+  enum TrafficSignVersion {
+    option allow_alias = true;
+    TSR_V_1_0 = 0;
+    TSR_V_1_1 = 1;
+    TSR_CURRENT_VERSION = 1;
+  }
+  TrafficSignVersion traffic_sign_version = 8;
+
+  // failsafe
+  enum FailSafeVersion {
+    option allow_alias = true;
+    FS_V_1_0 = 0;
+    FS_V_1_1 = 1;
+    FS_CURRENT_VERSION = 1;
+  }
+  FailSafeVersion fail_safe_version = 9;
+
+  // lane
+  enum LaneVersion {
+    option allow_alias = true;
+    LANE_V_1_0 = 0;
+    LANE_V_1_1 = 1;
+    LANE_CURRENT_VERSION = 1;
+  }
+  LaneVersion lane_version = 10;
+
+  // roadmark
+  enum RoadMarkVersion {
+    option allow_alias = true;
+    RM_V_1_0 = 0;
+    RM_V_1_1 = 1;
+    RM_CURRENT_VERSION = 1;
+  }
+  RoadMarkVersion road_mark_version = 11;
+
+  // freespace
+  enum FreeSpaceVersion {
+    option allow_alias = true;
+    FSP_V_1_0 = 0;
+    FSP_V_1_1 = 1;
+    FSP_CURRENT_VERSION = 1;
+  }
+  FreeSpaceVersion free_space_version = 12;
+
+  // Barricade
+  enum BarricadeVersion {
+    option allow_alias = true;
+    BA_V_1_0 = 0;
+    BA_CURRENT_VERSION = 0;
+  }
+  BarricadeVersion barricade_version = 13;
+}
+
+enum MeasuringStatus0 {
+  MS_OLD = 0;
+  MS_NEW = 1;
+}
+
+enum MeasuringStatus1 {
+  MS_PREDICTED = 0;
+  MS_MEASURED = 1;
+}
+
+enum MeasuringStatus2 {
+  MS_INVALID = 0;
+  MS_VALID = 1;
+}
+
+message MeasuringStatus {
+  MeasuringStatus0 measuring_status_0 = 1;
+  MeasuringStatus1 measuring_status_1 = 2;
+  MeasuringStatus2 measuring_status_2 = 3;
+}
+
+enum MotionCategory {
+  MC_UNFILLED = 0;
+  MC_UNDEFINED = 1;
+  MC_PASSING = 2;
+  MC_PASSING_IN = 3;
+  MC_PASSING_OUT = 4;
+  MC_CLOSE_CUT_IN = 5;
+  MC_MOVING_IN = 6;
+  MC_MOVING_OUT = 7;
+  MC_CROSSING = 8;
+  MC_LTAP = 9;
+  MC_RTAP = 10;
+  MC_MOVING = 11;
+  MC_PRECEEDING = 12;
+  MC_ONCOMING = 13;
+}
+
+enum MotionOrientation {
+  MO_INVALID = 0;
+  MO_DRIFTING_RIGHT = 1;
+  MO_CROSSING_RIGHT = 3;
+  MO_OC_DRIFTING_RIGHT = 5;
+  MO_ONCOMING = 6;
+  MO_OC_DRIFTING_LEFT = 7;
+  MO_CROSSING_LEFT = 9;
+  MO_DRIFTING_LEFT = 11;
+  MO_PRECEEDING = 12;
+  MO_UNKNOWN = 13;
+}
+
+enum VisibilitySide {
+  VS_NOT_VISIBLE = 0;
+  VS_FRONT = 1;
+  VS_REAR = 2;
+}
+
+enum MotionStatusV2 {
+  MotionStatusV2_INVALID = 0;
+  MotionStatusV2_UNKNOWN = 1;
+  MotionStatusV2_MOVING = 2;
+  MotionStatusV2_STATIONARY = 3;
+  MotionStatusV2_STOPPED = 4;
+  MotionStatusV2_MOVING_SLOWLY = 5;
+}
+
+enum CutInCutOut {
+  CUT_IN_CUT_OUT_UNKNOWN = 0;
+  CUT_IN_CUT_OUT_HOST_CUT_IN_LEFT = 1;
+  CUT_IN_CUT_OUT_HOST_CUT_IN_RIGHT = 2;
+  CUT_IN_CUT_OUT_HOST_CUT_OUT_LEFT = 3;
+  CUT_IN_CUT_OUT_HOST_CUT_OUT_RIGHT = 4;
+  CUT_IN_CUT_OUT_NO_CUT_IN_OUT = 5;
+}
+
+message Object {
+  int64 frame_index = 1;
+  int64 timestamp = 2;
+
+  CameraInfo.Position camera_position = 3;
+
+  int64 id = 4;
+  int64 class_ = 5;
+  string class_name = 6;
+  int64 subclass = 7;
+  string subclass_name = 8;
+  float confidence = 9;
+
+  Rect bbox = 10;
+
+  float length = 11;
+  float length_std = 12;
+  float width = 13;
+  float width_std = 14;
+  float height = 15;
+  float height_std = 16;
+
+  int64 age_count = 17;
+  float age_seconds = 18;
+
+  VisibilitySide visibility_side = 19;
+
+  float lat_distance = 20;
+  float lat_distance_std = 21;
+  float long_distance = 22;
+  float long_distance_std = 23;
+
+  float relative_lat_velocity = 24;
+  float relative_lat_velocity_std = 25;
+  float relative_long_velocity = 26;
+  float relative_long_velocity_std = 27;
+
+  float abs_lat_velocity = 28;
+  float abs_lat_velocity_std = 29;
+  float abs_long_velocity = 30;
+  float abs_long_velocity_std = 31;
+
+  float relative_lat_acc = 32;
+  float relative_lat_acc_std = 33;
+  float relative_long_acc = 34;
+  float relative_long_acc_std = 35;
+
+  float abs_lat_acc = 36;
+  float abs_lat_acc_std = 37;
+  float abs_long_acc = 38;
+  float abs_long_acc_std = 39;
+
+  float abs_speed = 40;
+  float abs_speed_std = 41;
+  float abs_acceleration = 42;
+  float abs_acceleration_std = 43;
+
+  float heading = 44;
+  float heading_std = 45;
+
+  float inverse_ttc = 46;
+  float inverse_ttc_std = 47;
+
+  float angle_left = 48;
+  float angle_right = 49;
+  float angle_rate = 50;
+  float angle_side = 51;
+
+  bool top_out_of_image = 52;
+  bool bottom_out_of_image = 53;
+  bool left_out_of_image = 54;
+  bool right_out_of_image = 55;
+
+  bool brake_light = 56;
+  bool turn_indicator_left = 57;
+  bool turn_indicator_right = 58;
+
+  MeasuringStatus measuring_status = 59;
+  MotionOrientation motion_orientation = 60;
+  MotionCategory motion_category = 61;
+  MotionStatusV2 motion_status = 62;
+  CutInCutOut cutin_cutout = 63;
+
+  int32 lane_assignment = 64;
+  bool lane_assignment_v = 65;
+
+  bool is_bev_object = 66;
+}
+
+message TrafficLightSpot {
+  enum Color {
+    COLOR_UNKNOWN = 0;
+    COLOR_GREEN = 1;
+    COLOR_RED = 2;
+    COLOR_YELLOW = 3;
+  }
+  Color color = 1;
+  float color_confidence = 2;
+
+  enum Type {
+    TYPE_UNKNOWN = 0;
+    TYPE_ARROW_STRAIGHT = 1;
+    TYPE_ARROW_LEFT = 2;
+    TYPE_ARROW_RIGHT = 3;
+    TYPE_ARROW_UTURN = 4;
+    TYPE_CIRCLE = 5;
+    TYPE_NUM = 6;
+  }
+  Type type = 3;
+  float dir_confidence = 4;
+
+  Rect bbox = 5;
+};
+
+message TrafficLight {
+  CameraInfo.Position camera_position = 1;
+  int64 timestamp = 2;
+
+  int64 struct_id = 3;
+  int64 spot_id = 4;
+  int64 class_ = 5;
+  string class_name = 6;
+  int64 tracking_age = 7;
+  Rect bbox = 8;
+  float height = 9;
+  float width = 10;
+  float lat_distance = 11;
+  float lat_distance_std = 12;
+  float long_distance = 13;
+  float long_distance_std = 14;
+  float rel_height = 15;
+  float rel_height_std = 16;
+
+  enum Color {
+    COLOR_UNKNOWN = 0;
+    COLOR_GREEN = 1;
+    COLOR_RED = 2;
+    COLOR_YELLOW = 3;
+  }
+  Color color = 17;
+  float color_confidence = 18;
+
+  enum Type {
+    TYPE_UNKNOWN = 0;
+    TYPE_ARROW_STRAIGHT = 1;
+    TYPE_ARROW_LEFT = 2;
+    TYPE_ARROW_RIGHT = 3;
+    TYPE_ARROW_UTURN = 4;
+    TYPE_CIRCLE = 5;
+    TYPE_NUM = 6;
+  }
+  Type type = 19;
+  float type_confidence = 20;
+
+  enum Mode {
+    NO_BRIGHT = 0;
+    ALWAYS_BRIGHT = 1;
+    FLASH = 2;
+  }
+  Mode mode = 21;
+
+  repeated TrafficLightSpot spots = 22;
+}
+
+message TrafficSign {
+  CameraInfo.Position camera_position = 1;
+  int64 timestamp = 2;
+
+  int64 id = 3;
+  int64 class_ = 4;
+  int64 subclass = 5;
+  string class_name = 6;
+  string subclass_name = 7;
+  Rect bbox = 8;
+
+  float height = 9;
+  float width = 10;
+  float lat_distance = 11;
+  float long_distance = 12;
+  int64 tracking_age = 13;
+
+  enum TrafficSIgnRelevancy {
+    Unknow = 0;
+    RELEVANT = 1;
+    UNRELEVANT = 2;
+  }
+  TrafficSIgnRelevancy relevance = 14;
+}
+
+message TrafficSignType {
+  enum Type {
+    UNKNOWN = 0;
+    WARNING = 6;
+    PROHIBIT = 7;
+    SUPPLEMENT = 11;
+  }
+  Type type = 1;
+
+  enum ProhibitionSign {
+    SPEED_LIMIT5 = 0;
+    SPEED_LIMIT10 = 1;
+    SPEED_LIMIT15 = 2;
+    SPEED_LIMIT20 = 3;
+    SPEED_LIMIT30 = 4;
+    SPEED_LIMIT35 = 5;
+    SPEED_LIMIT40 = 6;
+    SPEED_LIMIT50 = 7;
+    SPEED_LIMIT60 = 8;
+    SPEED_LIMIT70 = 9;
+    SPEED_LIMIT80 = 10;
+    SPEED_LIMIT90 = 11;
+    SPEED_LIMIT100 = 12;
+    SPEED_LIMIT110 = 13;
+    SPEED_LIMIT120 = 14;
+    STOP = 15;
+    YIELD = 16;
+    NO_ENTRY = 17;
+    DONOT_ENTER = 18;
+    NO_MOTOR_VEHICLES = 19;
+    NO_TRUCKS = 20;
+    NO_LARGE_BUESE = 21;
+    NO_MOTORCYCLES = 22;
+    ONLY_MOTOR_VEHICLES = 23;
+    NO_PEDESTRIANS = 24;
+    NO_LEFT_TURN = 25;
+    NO_RIGHT_TURN = 26;
+    NO_U_TURN = 27;
+    NO_OVERTAKING = 28;
+    NO_STOPPING = 29;
+    NO_HONKING = 30;
+    MAX_CLEARANCE = 31;
+    WEIGHT_LIMIT = 32;
+    AXLE_WEIGHT_LIMIT = 33;
+    SPEED_LIMIT_END = 34;
+    NO_MINIBUSES = 35;
+    NO_TRACTOR = 36;
+    NO_STRAIGHT = 37;
+    NO_LEFT_RIGHT_TURN = 38;
+    NO_OVERTAKING_END = 39;
+    MAX_WIDTH = 40;
+    HAZARDOUS_VEHICLES = 41;
+  }
+
+  enum WarningSign {
+    CROSSROADS = 0;
+    SHARP_CURVE = 1;
+    REVERSE_CURVE = 2;
+    WINDING_CURVES = 3;
+    STEEP_DESCENT = 4;
+    NARROW_ROAD = 5;
+    NARROW_BRIDGE = 6;
+    TWO_WAY_TRAFFIC = 7;
+    WATCH_PEDESTRIANS = 8;
+    WATCH_CHILDREN = 9;
+    TRAFFIC_LIGHTS = 10;
+    FALING_ROCKS = 11;
+    CROSSWIND = 12;
+    SLIPPERY_SURFACE = 13;
+    STEEP_MOUNTAIN_ROAD = 14;
+    EMBANKMENT_ROAD = 15;
+    VILLAGE = 16;
+    TUNNEL = 17;
+    HUMP_BACK_BRIDGE = 18;
+    BUMPY_ROAD = 19;
+    GUARDED_RAILWAY_CROSSING = 20;
+    UNGUARDED_RAILWAY_CROSSING = 21;
+    NON_MOTOR_VEHICLES = 22;
+    ACCIDENT_BLACK_SPOT = 23;
+    SLOW_DOWN = 24;
+    OBSTACLES = 25;
+    CAUTION_DRIVE = 26;
+    ROAD_WORK = 27;
+    SUGGESTED_SPEED = 28;
+    REVERSIBLE_LANE = 29;
+    ROADS_MERGE = 30;
+    ICY_ROAD = 31;
+    QUEUES_LIKELY = 32;
+  }
+
+  enum SupplementSign {
+    Time_Limit = 0;
+    Motor_Vehicles = 1;
+    Trucks = 2;
+    Arrow_Straight = 3;
+    Distance_In = 4;
+    School = 5;
+    Ramp = 6;
+    Minbuses = 7;
+    Arrow_Left = 8;
+    Arrow_Right = 9;
+    BendArrow_Left = 10;
+    BendArrow_Right = 11;
+    Arrow_Twoway = 12;
+  }
+
+  google.protobuf.Int32Value sign = 2;
+}
+
+message TrafficSignStatus {
+  TrafficSignType sign = 1;
+  repeated TrafficSignType derived_signs = 2;
+  Rect bbox = 3;
+  float lat_distance = 4;
+  float long_distance = 5;
+  float panel_width = 6;
+  float panel_height = 7;
+  float height = 8;
+  google.protobuf.FloatValue speed_limit = 9;
+  google.protobuf.FloatValue height_limit = 10;
+  google.protobuf.FloatValue weight_limit = 11;
+}
+
+enum AebFollowObjectState {
+  AEB_OBJ_NORMAL = 0;
+  AEB_OBJ_WARNING = 1;
+  AEB_OBJ_FRONT_STOP = 2;
+  AEB_OBJ_FRONT_SLOWMOVE = 3;
+  AEB_OBJ_PASS_THOUGH = 4;
+}
+
+message AebObject {
+  int64 id = 1;
+  int32 appear_count = 2;
+  uint64 type = 3;
+  float width = 4;
+  float length = 5;
+  float speed_x = 6;
+  float speed_y = 7;
+  float cur_distance_x = 8;
+  float cur_distance_y = 9;
+  repeated float last_1s_x = 10;
+  repeated float last_1s_y = 11;
+  repeated float last_1s_heading = 12;
+  repeated int32 last_record_counter = 13;
+  AebFollowObjectState state = 14;
+}
+
+message VehiclePredictPoint {
+  float x = 1;
+  float y = 2;
+  float t = 3;
+  AebFollowObjectState status = 4;
+}
+
+message Vehicle_State {
+  float vehicle_spd = 1;
+  float vehicle_yaw_rate = 2;
+  float lateral_acce = 3;
+  float longitude_acce = 4;
+  bool throttle_report_driver = 5;
+  float steering_torque_nm = 6;
+  float steer_angle = 7;
+}
+
+message Signal_Input {
+  bool FCW_Enable = 1;
+  bool AEB_Enable = 2;
+  uint32 FCWSensitiveLevel = 3;
+  uint32 AEBSensitiveLevel = 4;
+  uint32 TireComplexityLevel = 5;
+  float EnvTemperature = 6;
+  float EnvHumidity = 7;
+  Vehicle_State vehicle_state = 8;
+}
+
+message Signal_Output {
+  bool FCW_Active = 1;
+  bool AEB_Active = 2;
+  uint32 FCWStatus = 3;
+  uint32 FCWSensitiveLevel = 4;
+  uint32 FCW_State = 5;
+  uint32 AEBStatus = 6;
+  uint32 AEBSensitiveLevel = 7;
+  uint32 AEB_State = 8;
+  uint32 AEBVehicleHoldReq = 9;
+  uint32 AEBFullBrake = 10;
+  uint32 AEBDBSLevel = 11;
+  uint32 AEBPrefillReq = 12;
+  uint32 AEBJerkReq = 13;
+  float AEBTargetDeceleration = 14;
+  uint32 AEBJerkLevel = 15;
+}
+
+message Fault_Signal {
+  uint32 FCWSystemFaultStatus = 1;
+  uint32 AEBSystemFaultStatus = 2;
+}
+
+message Vehicle_Signal {
+  Signal_Output signal_output = 1;
+  Fault_Signal fault_signal = 2;
+}
+
+message AebOutput {
+  bool is_valid = 1;
+  enum AebOut {
+    AEB_IDLE = 0;
+    AEB_WARNING = 1;
+    AEB_BRAKING_LEVEL1 = 2;
+    AEB_BRAKING_LEVEL2 = 3;
+    AEB_BRAKING_LEVEL3 = 4;
+  }
+  AebOut aeb_out = 2;
+  enum AebDecision {
+    AEB_DECISION_IDLE = 0;
+    AEB_DECISION_WARNING = 1;
+    AEB_DECISION_FRONT_BRAKE_LEVEL1 = 2;
+    AEB_DECISION_FRONT_BRAKE_LEVEL2 = 3;
+    AEB_DECISION_FRONT_BRAKE_LEVEL3 = 4;
+    AEB_DECISION_PASS_BRAKE_LEVEL1 = 5;
+    AEB_DECISION_PASS_BRAKE_LEVEL2 = 6;
+    AEB_DECISION_PASS_BRAKE_LEVEL3 = 7;
+  }
+  AebDecision aeb_decision = 3;
+  repeated AebObject follow_objects = 4;
+  repeated VehiclePredictPoint predict_pts = 5;
+  Vehicle_Signal vehicle_signal = 6;
+}
+
+message AebInput {
+  Signal_Input signal_input = 1;
+}
+
+message AebInfo {
+  AebInput aeb_input = 1;
+  AebOutput aeb_output = 2;
+}
+
+message Failsafe {
+  CameraInfo.Position camera_position = 1;
+  int64 timestamp = 2;
+
+  enum FailSafeBlockage {
+    BLOCKAGE_UNKNOWN = 0;
+    BLOCKAGE_FULL = 1;
+    BLOCKAGE_PARTICAL = 2;
+    BLOCKAGE_NONE = 3;
+  }
+  FailSafeBlockage blockage_status = 3;
+  string blockage_name = 4;
+
+  enum FailSafeWeather {
+    WEATHER_UNKNOWN = 0;
+    WEATHER_FOG = 1;
+    WEATHER_RAIN = 2;
+    WEATHER_SNOW = 3;
+    WEATHER_SUNNY = 4;
+  }
+  FailSafeWeather weather_status = 5;
+  string weather_name = 6;
+
+  enum FailSafeIllumination {
+    ILLUMINATION_UNKNOWN = 0;
+    ILLUMINATION_DAY = 1;
+    ILLUMINATION_DUSK = 2;
+    ILLUMINATION_NIGHT = 3;
+  }
+  FailSafeIllumination illumination_status = 7;
+  string illumination_name = 8;
+
+  enum FailSafeImageLimited {
+    IMAGE_LIMITED_UNKNOWN = 0;
+    IMAGE_LIMITED_NORMAL = 1;
+    IMAGE_LIMITED_LOWSUN = 2;
+    IMAGE_LIMITED_SPALSHES = 3;
+    IMAGE_LIMITED_BLUR = 4;
+    IMAGE_LIMITED_SUNRAY = 5;
+    IMAGE_LIMITED_FROZEN = 6;
+    IMAGE_LIMITED_OTHER = 7;
+  }
+  FailSafeImageLimited image_limited_status = 9;
+  string image_limited_name = 10;
+
+  bool out_of_focus = 11;
+  int32 impacted_technologies = 12;
+}
+
+enum CipvLost {
+  CipvLost_NO_LOSS = 0;
+  CipvLost_LOST_TARGET_FOV_OUT = 1;
+  CipvLost_LOST_TARGET_FOV_IN = 2;
+}
+
+enum AllowAcc {
+  AllowAcc_FREE_SPACE = 0;
+  AllowAcc_SPACE_NOT_FREE = 1;
+  AllowAcc_FREE_SPACE_UNKNOWN = 2;
+}
+
+message PerceptionFrame {
+  Header header = 1;
+
+  int64 vd_count = 2;
+  int64 vru_count = 3;
+  int64 num_of_objects = 4;
+  int64 cipv_id = 5;
+  int64 vd_niv_left = 6;
+  int64 vd_niv_right = 7;
+
+  CipvLost cipv_lost = 8;
+  AllowAcc allow_acc = 9;
+
+  repeated Object object = 10;
+
+  repeated RoadMark road_mark = 11;
+  Lane lane = 12;
+  FreeSpace free_space = 13;
+
+  repeated TrafficLight tfl_structure = 14;
+  repeated TrafficLight tfl_struct_state = 15;
+  int64 tfl_struct_count = 16;
+  int64 tfl_spot_count = 17;
+
+  repeated TrafficSign traffic_sign = 18;
+  repeated TrafficSignStatus traffic_sign_status = 19;
+
+  repeated Failsafe failsafe = 20;
+
+  repeated Vehicle vehicle_info = 21;
+
+  int64 barricade_count = 22;
+  repeated Barricade barricade_object = 23;
+
+  repeated Point self_lane_center = 24;
+
+  Diagnose diagnose = 25;
+
+  int64 perception_end_timestamp = 26;
+
+  AebInfo aeb_info = 27;
+}

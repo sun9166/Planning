@@ -1,0 +1,36 @@
+syntax = "proto2";
+
+package acu.planning;
+
+import "waypoint_sampler_config.proto";
+
+message TrajectoryCostConfig {
+  optional double eval_time_interval = 1 [default = 0.1];
+  optional double path_resolution = 2 [default = 0.1];
+  optional double obstacle_ignore_distance = 3 [default = 20.0];
+  optional double obstacle_collision_distance = 4 [default = 0.2];
+  optional double obstacle_risk_distance = 5 [default = 2.0];
+  optional double obstacle_collision_cost = 6 [default = 1e3];
+  optional double path_l_cost = 7;
+  optional double path_dl_cost = 8;
+  optional double path_ddl_cost = 9;
+  optional double path_l_cost_param_l0 = 10;
+  optional double path_l_cost_param_b = 11;
+  optional double path_l_cost_param_k = 12;
+  optional double path_out_lane_cost = 13;
+  optional double path_end_l_cost = 14;
+}
+
+message DpPolyPathConfig {
+  optional bool enable_pull_over = 1 [default = true];
+  optional double eval_time_interval = 2 [default = 0.1];
+  optional double path_resolution = 3 [default = 0.1];
+  optional WaypointSamplerConfig waypoint_sampler_config = 4;
+  // Trajectory Cost Config
+  optional TrajectoryCostConfig default_config = 5;
+  optional TrajectoryCostConfig lanechange_config = 6;
+  optional TrajectoryCostConfig avoid_obstacle_config = 7;
+  
+}
+
+

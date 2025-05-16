@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package planning_msgs;
+import "common_msgs.proto";
+//外部调用指令
+message PlanningCmd {
+	int32 mission_id                   = 1;  // 当前任务id
+	int32 mission_type                 = 2; // 0:停车, 1:自行走, 2:循迹
+	int32 mission_command              = 3; // 0:停止任务, 1:启动任务, 2:暂停任务, 3: 继续任务          
+}
+//外部调用指令
+message BehaviorLimitCmd {
+	float speed_limit                  = 1; // 道路限速(m/s) default-1000
+	uint32 brake_cmd                   = 2;  // 0-default 1-slow_brake 2-emergency_brake
+	uint32 lane_change_cmd             = 3; // 0-default 1-left 2-right
+	repeated int32  behaviorlimit               = 4;
+	repeated int32  behaviorexecutethreshold    = 5; 
+}
+//外部调用指令的反馈
+message PlanningResult {
+	int32 result                       = 1; //-1:命令执行失败; 0:命令执行成功 1:执行中
+    string addition_message            = 2;// 其他消息
+}
+
+message Integer {
+	uint32 input = 1;
+}
+
+//外部调用指令的反馈
+message PlanningStatus {
+	int32  status                       = 1;//-1:异常 0:无任务状态 1:任务运行中 2:任务失败 3:任务完成 4:任务暂停成功 5:任务准备中
+	int32  mission_id                   = 2; // 当前执行任务id
+	int32  mission_type                 = 3; // 0:停车, 1:自行走, 2:循迹, 3:找定位
+	float  speed_limit                  = 4; // 道路限速(m/s)
+	int32 brake_status                  = 5; // 0-default 1:slow brake  2:emergency brake 
+	int32 lane_change_status            = 6; //0-default 1:left change  2:right chanege
+	PlanningResult lane_change_feedback = 7; 
+	repeated int32  behaviorlimit                = 8;
+	repeated int32  behaviorexecutethreshold     = 9;
+}
+
+
+message TrajectoryPoint {
+	float x                            = 1; 
+	float y                            = 2;
+	double xg                          = 3;
+	double yg                          = 4;
+	double xg_dr                       = 5;
+	double yg_dr                       = 6;
+	float angle                        = 7;
+	float angleglobal                  = 8;
+	float angleglobal_dr               = 9;
+	float velocity                     = 10;
+	float a                            = 11;
+	float t                            = 12;
+	float curvature                    = 13;
+	float length                       = 14;
+	int32 direction                    = 15;
+}
+
+message ImuInfo {
+	double time_stamp                  = 1; 
+	double xg                          = 2; 
+	double yg                          = 3; 
+	double yaw                         = 4; 
+	double velocity                    = 5; 
+	double vx                          = 6; 
+	double vy                          = 7; 
+	double loc_xg_dr                   = 8; 
+	double loc_yg_dr                   = 9; 
+	double loc_yaw_dr                  = 10; 
+	bool correction_flag               = 11; 
+}
+
+message BusinessFeedback {
+	common_msgs.Header header                         = 1; 
+	Business business                     = 2; 
+	repeated string reference_lane_ids    = 3; 
+	repeated string reference_target_ids  = 4; 
+	int32 decision_id                     = 5; 
+	bool path_in_current                  = 6; 
+	bool is_passable                      = 7; 
+	repeated string passable_lane_ids     = 8; 
+	repeated string black_road_ids        = 9; 
+}
+
+message Business {
+	int32 orderreply                   = 1; 
+	uint32 direction                   = 2; 
+	int32 turning                      = 3; 
+	int32 driving_status               = 4; 
+	float speed_limit                  = 5; 
+	int32 impassable_flag              = 6; 
+}
+//决策规划模块输出
+message Trajectory {
+	common_msgs.Header header                       = 1;
+	repeated TrajectoryPoint points     = 2;
+	uint32 direction                    = 3;
+	uint32 autodrvmodeentry             = 4;
+	uint32 autodrvmodeexit              = 5;
+	repeated string lane_ids            = 6;
+	int32 lane_type                     = 7; //0: straight lane 1:U_turn 
+	int32  car_fault_level              = 8;
+	float control_accuracy              = 9;
+	ImuInfo imu_loc_data                = 10;
+	ImuInfo correct_loc_data            = 11;
+	int32 gear_position_request         = 12; //0: No request #1 request
+	int32 senario_type                  = 13; //0: normal, 1:uncertain
+	float steeringangle_rate_max        = 14; //steeringangle_rate limit for latcontrol
+}
+
+
+
+
+

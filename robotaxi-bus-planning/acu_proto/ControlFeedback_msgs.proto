@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package ControlFeedback_msgs;
+
+message VehicleInfo {
+    float steerangle =1;
+    float speed =2;
+    float vehicle_accel =3;
+    float brake_pressure =4;
+    int32 shift_position =5;
+    int32 epb_status =6;
+    int32 current_drive_mode =7;
+    int32 sys_state =8;
+    bool vehicle_auto_enable =9;
+    bool vehicle_lat_enable =10;
+    bool vehicle_lon_enable =11;
+    bool vehicle_epb_status =12;
+    int32 on_accpedal =13;
+    bool steer_left_down =14;
+}
+
+message TimeStatus {
+    double 	dtime =1;
+    string 	source_node_name =2;
+    string 	destination_node_name =3;
+}
+
+message TimeStatistics {
+    repeated TimeStatus	dev_time_status_msg =1;
+    double 	sending_timestamp =2;
+}
+
+message FaultInfo {
+    double 	timestamp_sec =1;
+    string 	module_name =2;
+    string 	version =3;
+    int32 	error_code =4;
+    string 	msg =5;
+    int32 	fault_level =6;
+    int32 	fault_type =7;
+}
+
+
+message FaultVec {
+    repeated FaultInfo 	info_vec = 1;
+    int32 	module_fault_level =2;
+}
+
+message Header {
+    int32 sequence_num = 1;
+    double time_stamp =2;
+    string 	module_name =3;
+    string 	version =4;
+    FaultVec 	fault_vec =5;
+    TimeStatistics 	time_statistics =6;
+}
+
+message ControlFeedback {
+    Header header = 1;
+    VehicleInfo vehicle_info =2;
+    int32 brake_state = 3;
+}

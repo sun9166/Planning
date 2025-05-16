@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package acu.hdmap;
+
+import "map_id.proto";
+import "map_geometry.proto";
+
+//道路内边界（花坛）
+message Inner {
+  optional Id id = 1;
+  optional Polygon polygon = 2;
+}

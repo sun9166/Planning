@@ -1,0 +1,3 @@
+/host/common_package/map/vectormap/build/CMakeFiles/vectormap.dir
+/host/common_package/map/vectormap/build/CMakeFiles/edit_cache.dir
+/host/common_package/map/vectormap/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,38 @@
+digraph G {
+   rankdir=LR;
+Idle	->	ForwardFollowing[label = NoThingToDo];
+ForwardFollowing	->	NarrowTurn[label = CurvatureFault];
+ForwardFollowing	->	ForceAvoid[label = DeviationPath];
+ForwardFollowing	->	SlowDown[label = PathCollision];
+ForwardFollowing	->	BackStayStill[label = AebEmergency];
+SlowDown	->	ForwardFollowing[label = PathNoCollision];
+SlowDown	->	ForceAvoid[label = DeviationPath];
+SlowDown	->	BackStayStill[label = AebEmergency];
+SlowDown	->	ForwardStayStill[label = SlowDownFinish];
+SlowDown	->	ForwardAvoid[label = DWAResultSuccess];
+BackFollowing	->	ForwardFollowing[label = PathNoCollision];
+BackFollowing	->	ForceAvoid[label = DeviationPath];
+BackFollowing	->	ForwardAvoid[label = DWAResultSuccess];
+BackFollowing	->	BackStayStill[label = BackFollowingFinish];
+ForwardAvoid	->	ForceAvoid[label = DeviationPath];
+ForwardAvoid	->	SlowDown[label = PathCollision];
+ForwardAvoid	->	ForwardFollowing[label = ForwardAvoidFinish];
+BackAvoid	->	BackStayStill[label = DeviationPath];
+BackAvoid	->	BackStayStill[label = PathCollision];
+BackAvoid	->	ForwardFollowing[label = BackAvoidFinish];
+ForceAvoid	->	SlowDown[label = PathCollision];
+ForceAvoid	->	ForwardFollowing[label = ForceAvoidFinish];
+ForceAvoid	->	BackStayStill[label = ForceAvoidFault];
+NarrowTurn	->	BackStayStill[label = PathCollision];
+NarrowTurn	->	ForwardFollowing[label = NarrowTurnFinish];
+NarrowTurn	->	BackStayStill[label = NarrowTurnFault];
+ForwardStayStill	->	ForwardFollowing[label = PathNoCollision];
+ForwardStayStill	->	ForceAvoid[label = DeviationPath];
+ForwardStayStill	->	ForwardAvoid[label = DWAResultSuccess];
+ForwardStayStill	->	BackFollowing[label = ForwardStayTimeOut];
+BackStayStill	->	ForwardFollowing[label = PathNoCollision];
+BackStayStill	->	ForwardAvoid[label = DWAResultSuccess];
+BackStayStill	->	BackAvoid[label = HybridAstarSuccess];
+BackStayStill	->	BehaviorError[label = BackStayTimeOut];
+
+}

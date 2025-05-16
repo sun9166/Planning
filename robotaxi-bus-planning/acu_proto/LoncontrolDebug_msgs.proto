@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package LoncontrolDebug_msgs;
+
+message Cell{
+     uint32 idc = 1;
+     uint32 type = 2;
+     float x = 3;
+     float y = 4;
+     float xg = 5;
+     float yg = 6;
+}
+
+message Object {
+    uint32 id  =1;
+    float x         =2;    //# relative distance of x, unit: m
+    float y         =3;    //# relative distance of y, unit: m
+    float vxrel     =4;    //# relative speed of x, unit: m/s
+    float vyrel     =5;    //# relative speed of y, unit: m/s
+    float vxabs     =6;    //# absolute speed of x, unit: m/s
+    float vyabs     =7;    //# absolute speed of y, unit: m/s
+    float acceleration =8; 
+    float width     =9;    //# unit: m
+    float length    =10;   //# unit: m
+    float heading   =11;   
+    float speed     =12;   //# unit: m/s
+    uint32    type     =13;   //# 0-car, 1-truck, 2-pedestrian, 3-cyclist, 4-virtual, 5-unknown
+    Cell cells=14;   //# vector of object occupied cells
+}
+
+message Obstacles {
+
+    Object objects = 1;
+    Cell   Cells =2;
+}
+
+message LoncontrolDebug {
+    Obstacles path_filter_obs =1;
+    Obstacles predict_carpos_filter_obs =2;
+    Obstacles dangerous_obs =3;
+    double sbj_speed =4;
+    double virtual_speed =5;
+    double target_speed_lag =6;
+    double point_zero_velocity =7;
+    double speed_p =8;
+    double speed_i =9;
+    double target_acel =10;
+    double acel_real_raw =11;
+    double sbj_acel =12;
+    double acel_p =13;
+    double acel_i =14;
+    double torque =15;
+    double pressure =16;
+    double point_zero_length =17;
+    double path_length =18;
+    double preview_distance =19;
+    double real_steer_angle =20;
+    double lat_error =21;
+    double pitch =22;
+    double preview_acel =23;
+    double acel_pitch_offset =24;
+    double acel_dis_offset =25;
+    double speed_error =26;
+    double station_error =27;
+    double pos_matched_length =28;
+    double time_matched_length =29;
+    double accuracy_dis =30;
+    double ego_velocity_prediction =31;
+    double ego_station_prediction =32;
+    double time_prev_matched_length =33;
+    double jerk =34;
+    double station_p =35;
+    double station_i =36;
+    int32 pre_zero_velocity_flag =37;
+    int32 end_length_openloop_flag =38;
+    int32 path_direction =39;
+    int32 emergency_obstacle =40;
+    int32 slow_aeb_mode =41;
+    int32 is_shift_position =42;
+    int32 real_shift_position =43;
+    int32 shift_position =44;
+    int32 car_fault_level =45;
+    double temp1 =46;
+    double temp2 =47;
+    double temp3 =48;
+    int32 emergency_flag =49;
+    float acc_dis_car_to_obj =50;
+    float acc_obj_velocity =51;
+    float acc_desired_dis =52;
+    float acc_delt_dis =53;
+    float acc_delt_v =54;
+    float acc_dis_error_accel =55;
+    float acc_v_error_accel =56;
+    float acc_accel =57;
+    float accel_finally =58;
+    float safe_dis_base_path =59;
+    float loc_yaw =60;
+    float theta_abs =61;
+    float a_obs =62;
+    float object_speed =63;
+    float s_safe =64;
+    float pred_time =65;
+    float nearest_obs_dis_to_car =66;
+    double  neareat_cell_dis_to_car_ =67;
+    float collision_obj_x =68;
+    float collision_obj_y =69;
+    float collision_cell_x =70;
+    float collision_cell_y =71;	 
+
+}
